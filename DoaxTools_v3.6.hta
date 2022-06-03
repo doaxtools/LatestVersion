@@ -1,0 +1,2320 @@
+<html>
+<head>
+<!-- -----------------------------------------------------------------------------------------------
+-----------  版本信息描述（后序更新者请注明版本号、更新时间、更新人及更新内容等信息）  -------------
+----------------------------------------------------------------------------------------------------
+
+版本号 | 更新时间 | 更新人 | 更新信息
+
+v1.0; 2022/05/15; @卑微小萌新; 
+Initial version.
+
+v2.0; 2022/05/19; @卑微小萌新; 
+重新调整部分功能，重写部分代码.
+给button加了特效.
+增加了几率概览模块.
+将女孩等级提升计算、礼物经验计算与涂油提升计算合并为实用计算，并在该模块上增加了活动代币计算和抽卡几率计算.
+修复了radio指示的问题，但F5刷新时仍然会出现radio指示不正确的问题.
+
+v2.1; 2022/05/21; @卑微小萌新; 
+更正了礼物经验错误
+更新了Tina,Elise,小春的初始数据
+感谢岛渚、修狱等提供的数据！
+
+v2.2; 2022/05/21; @卑微小萌新; 
+更新了升级到81-86级所需要的经验值
+同时将属性增长更新到86级
+现在女孩等级提升计算和涂油计算都可以指定到86级了
+
+v2.3; 2022/05/22; @卑微小萌新; 
+更新了Amy的属性
+感谢TOAA提供的数据！
+
+v2.4; 2022/05/22; @卑微小萌新; 
+更新了Amy的首饰信息
+
+v2.5; 2022/05/22; @卑微小萌新; 
+更正了Tina的生日信息
+
+v2.5; 2022/05/23; @卑微小萌新;
+为input添加了placeholder提示，为此将content="IE=9"更改为content="IE=10"并重新调整了格式
+重新计算了篮子数并添加了注释
+更新了小春和蒂娜的首饰信息
+
+v3.0; 2022/05/24; @卑微小萌新;
+简单调整了下格式
+增加新模块“其它数据”，方便用户自定义数据
+增加altRowsClass函数使所有class为XXX的表格自动奇偶行颜色分隔
+更正了两心和三心食物的经验数据
+
+v3.1; 2022/05/26; @卑微小萌新;
+修复tableFontWeight函数数字0的BUG，重写该函数并增加了整列加粗表格文字的方法
+
+v3.2; 2022/05/28; @卑微小萌新;
+增加了往期活动查询
+所有特殊字符均用代码形式打出，使脚本更方便的使用记事本或写字板等常用工具调试
+
+v3.3; 2022/05/29; @卑微小萌新;
+重新定义了查找游戏发售前日期时程序的动作
+一些特殊符号的变更
+为concatSource函数增加了跳出循环的参数
+为爬数据页面增加了开始和结束的标识
+现在爬数据页面input值为空时将直接获取处理过URL地址(可以直接复制后粘贴到hisUrlArr数组中)
+至此版本小程序在功能上已经完成预期，但代码冗长、重复、杂乱，有时间还需进一步处理
+
+v3.4; 2022/05/31; @卑微小萌新;
+为往期活动查询添加了日历
+修复了不同缩放与布局下textarea区域大小不统一的问题，同时修复了少量字体大小、颜色显示不正确的问题
+修复了tableFontWeight函数超出单元格范围报错的bug
+为往期活动查询部分的JS代码做了注释
+
+v3.5; 2022/06/01; @卑微小萌新;
+更新了所有女孩的饰品信息（未验证）
+
+v3.5; 2022/06/01; @卑微小萌新;
+重写往期活动代码
+
+
+----------------------------------------------------------------------------------------------------
+-----------------------------------------  版本信息描述结束   --------------------------------------
+--------------------------------------------------------------------------------------------------->
+
+
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=10" charset="gb2312" >
+<title>DOAX小工具(v3.6)&nbsp;&nbsp;@卑微小萌新</title>
+<HTA:Application
+Applicationname="doaxApp3"
+border="thin"
+borderstyle="normal"
+innerBorder="no"
+contextMenu="no"
+commandLine="yes"
+caption="yes"
+icon="hta.ico"
+maximizebutton="no"
+minimizebutton="no"
+showintaskbar="yes"
+singleinstance="yes"
+sysmenu="yes"
+windowstate="normal"
+scroll="no">
+
+<style type="text/css">
+a:hover{ color:red !important; }
+a{ cursor:pointer; }
+.box{
+    opacity: 0.1;
+}
+button{
+    font-size: 15px;
+}
+input{
+    font-size: 15px;  
+}
+input.buttonClass  {
+    box-shadow: 6px 6px 2px #888888;
+}
+input.buttonClass2  {
+    box-shadow: 2px 2px 2px #888888;
+}
+input.buttonClass:hover  {
+    transform: translateY(2px);
+}
+input.buttonClass2:hover  {
+    transform: translateY(2px);
+}
+input.buttonClass:active  {
+    transform: translateY(1.5px);
+}
+input.buttonChosenClass  {
+    transform: translateY(1px);
+    box-shadow: 3px 3px 2px #888888;
+    background-color:  #dddddd;
+}
+select{
+    font-size: 15px;
+}
+
+table input {
+    font-size: 14px;
+}
+
+table {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666; 
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+table th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+}
+table td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+}
+.evenrowcolor{
+    background-color:#c3dde0;
+}
+.oddrowcolor{
+    background-color:#d4e3e5;
+}
+.powevenrowcolor{
+    background-color:#ff8181;
+}
+.powoddrowcolor{
+    background-color:#ffd8d8;
+}
+.tecevenrowcolor{
+    background-color:#a8d2a7;
+}
+.tecoddrowcolor{
+    background-color:#dff0df;
+}
+.stmevenrowcolor{
+    background-color:#f8de90;
+}
+.stmoddrowcolor{
+    background-color:#ffffe5;
+}
+.EditCell_TextBox {  
+    width: 95%;  height: 95%;
+}
+.calendarBody {
+    width:304px;
+    height:304px;
+    position: absolute;
+}
+.calendar{
+    width:304px;
+    height:304px;
+    background:#fff;
+    box-shadow:0px 1px 1px rgba(0,0,0,0.1);
+        left: 170px;
+        top: 128px;
+    position: absolute;
+}
+.calendar-list ul{
+    width:100%;
+    font-family:arial;
+    font-weight:bold;
+    font-size:14px;
+    padding:0px;
+    margin:0px;
+}
+.calendar-list ul li{
+    width:14.28%;
+    height:36px;
+    line-height:36px;
+    list-style-type:none;
+    display:block;
+    box-sizing:border-box;
+    float:left;
+    text-align:center;
+}
+
+
+.afterToday {
+    color: #696969;
+}
+
+.beforeToday {
+    color: #A9A9A9 ;
+}
+.beforeToday:hover {
+    color: orange !important ;
+    background: #E8E8E8;
+}
+.afterToday:hover {
+    color: orange !important ;
+    background: #E8E8E8;
+}
+.thisDay {
+    color: red; 
+}
+.thisDay:hover {
+    color: red; 
+    background: #E8E8E8;
+}
+
+</style>
+</head>
+<body bgcolor="#DCDCDC" style="font-size:14px;">
+<script type="text/javascript">
+while (true) {
+    try {
+    var windowWidth = 660, windowHeight = 600;
+        window.resizeTo(windowWidth, windowHeight);
+        window.moveTo((window.screen.width - windowWidth) / 2, (window.screen.height - windowHeight) / 2);
+        break;
+    } catch (e) { continue; }
+}
+
+
+
+// 常量设定
+version='3.6'
+var maxLevel=200       //设定岛主等级的最大值
+var maxGirlLevel=86    //设定女孩等级的最大值
+var matchMaxGirlLevel=maxGirlLevel    //在女孩升级选项中允许输入的女孩最高等级（设定此值是因为有时候拿不到最新数据，如女孩等级开放到87级，第一时间拿不到86级升至87级所需要的经验值）
+var oilMaxGirlLevel=maxGirlLevel      //在涂油计算选项中允许输入的女孩最高等级（设定此值理由同上）
+
+//定义女孩属性数组，该数组会被不同模块用到，方便程序扩展。
+//  0       1           2    3    4   5   6         7         8         9     10
+//'Name', '姓名',      pow, tec, stm,apl,'头',     '脸',     '手',    '倾向','生日'
+var girlAttArr = [
+['Misaki','海咲',      1040,900,1050,20, '强压B'  ,'节体C'  ,'杀球A'  ,'pow','7/7'   ],
+['Kokoro','心',        1000,850,1150,10, '杀球A'  ,'强压C'  ,'节体E'  ,'pow','12/1'  ],
+['Nyotengu','女天狗',  1050,800,1150,10, '杀球D'  ,'节体E'  ,'假动作E','pow','11/19' ],
+['Marie','玛丽',       800,1090,1100,20, '节体E'  ,'心理战B','假动作B','tec','6/6'   ],
+['Kasumi','霞',        900,1040,1050,20, '节体A'  ,'假动作B','心理战C','tec','2/23'  ],
+['Ayane','凌音',       800,1000,1200,10, '节体C'  ,'心理战C','假动作A','tec','8/5'   ],
+['Helena','海莲娜',    850,1000,1150,10, '节体D'  ,'假动作E','接球A'  ,'tec','1/30'  ],
+['Honoka','穗香',       850,850,1300,10, '杀球F'  ,'强压F'  ,'节体F'  ,'stm','3/24'  ],
+['Hitomi','瞳',         900,800,1300,10, '杀球B'  ,'强压A'  ,'热舞E'  ,'stm','5/25'  ],
+['Momiji','红叶',       800,900,1290,20, '节体F'  ,'假动作F','接球F'  ,'stm','9/20'  ],
+['Luna','露娜',         830,820,1340,20, '假动作A','杀球F'  ,'热舞D'  ,'stm','10/15' ],
+['Tamaki','环',         1040,970,980,20, '强压D'  ,'节体C'  ,'杀球D'  ,'pow','8/19'  ],
+['Leifang','丽凤',     900,1090,1000,10, '节体A'  ,'假动作B','心理战B','tec','4/23'  ],
+['Fiona','菲欧娜',      800,870,1310,20, '杀球F'  ,'节体F'  ,'假动作D','stm','2/11'  ],
+['Nagisa','凪咲',      1060,900,1020,20, '强压E'  ,'节体B'  ,'杀球C'  ,'pow','5/5'   ],
+['Kanna','神无',       1080,820,1100,10, '杀球A'  ,'节体A'  ,'强压C'  ,'pow','9/15'  ],
+['Monika','莫妮卡',    840,1110,1030,20, '假动作C','节体E'  ,'心理战B','tec','1/1'   ],
+['Sayuri','小百合',     800,800,1400,20, '心理战A','节体F'  ,'假动作E','stm','3/31'  ],
+['Patty','派蒂',       1070,880,1060,10, '杀球E'  ,'节体F'  ,'强压F'  ,'pow','7/31'  ],
+['Tsukushi','筑紫',    850,1100,1050,10, '心理战D','节体B'  ,'假动作B','tec','10/24' ],
+['Loberia','萝贝莉娅',  800,950,1250,20, '假动作D','节体D'  ,'心理战A','stm','6/25'  ],
+['Nanami','七海',      1050,930,1030,20, '杀球E'  ,'强压D'  ,'节体D'  ,'pow','4/16'  ],
+['Tina','蒂娜',        1120,800,1100,10, '强压A'  ,'节体A'  ,'杀球B'  ,'pow','12/6'  ],
+['Elise','伊莉丝',     920,1060,1040,10, '节体F'  ,'假动作F','心理战C','tec','9/3'   ],
+['Kaharu','小春',       940,840,1240,10, '杀球C'  ,'强压C'  ,'节体E'  ,'stm','12/22' ],
+['Amy','艾米',         890,1120,1030,10, '假动作D','心理战F','节体B'  ,'tec','6/18'  ]
+]
+
+// 1-86级每升一级所需要的经验值
+var levelValue = [
+    0,5,8,10,20,22,23,25,30,39,44,50,57,69,81,103,113,118,133,149,
+    166,184,203,223,244,265,287,311,336,365,397,555,744,968,1222,1500,1811,2142,2492,2864,
+    3254,3664,4090,4534,4994,5508,6238,7214,8465,9957,11704,13706,15958,18465,21020,24234,27498,31001,34780,38797,
+    42998,47582,52347,57380,62654,68176,73949,79973,86248,92773,99545,106568,113840,121364,129135,137156,145418,153935,162701,171716,
+    181000,190515,200279,210292,220554,231063
+]
+
+// 50-86级每升一级所增加的属性值（注：数据截止到86级），魅力属性分别在20、50、70级各增加10点。
+var proAddArr50 = [
+[13, 13, 17],[13, 13, 17],[15, 15, 20],[17, 17, 21],[17, 17, 23],[19, 19, 25],[19, 19, 26],[21, 21, 28],[23, 23, 29],[23, 23, 31],
+[25, 25, 33],[25, 25, 34],[27, 27, 36],[29, 29, 39],[29, 29, 39],[31, 31, 41],[31, 31, 42],[33, 33, 44],[35, 35, 45],[35, 35, 47],
+[37, 37, 49],[37, 37, 50],[39, 39, 52],[41, 41, 54],[41, 41, 55],[43, 43, 56],[43, 43, 59],[45, 45, 60],[47, 47, 61],[47, 47, 62],
+[49, 49, 65],[49, 49, 66],[51, 51, 68],[53, 53, 69],[53, 53, 71],[55, 55, 73]
+]
+
+//使表格奇偶行颜色错落
+function altRows(id,evenrow,oddrow){
+    if(document.getElementsByTagName){
+        var table = document.getElementById(id); 
+        var rows = table.getElementsByTagName("tr");          
+        for(i = 0; i < rows.length; i++){         
+            if(i % 2 == 0){
+                rows[i].className = evenrow;
+            }else{
+                rows[i].className = oddrow;
+            }     
+        }
+    }
+}
+
+function altRowsClass(ClassName,evenrow,oddrow){
+    if(document.getElementsByTagName){
+        if(!evenrow) { var evenrow = 'evenrowcolor' }
+        if(!oddrow) { var oddrow = 'oddrowcolor' }
+        for (j = 0; j < document.getElementsByClassName(ClassName).length; j++) {
+            var id = document.getElementsByClassName(ClassName)[j].id
+            var table = document.getElementById(id);
+            var rows = table.getElementsByTagName("tr");       
+            for(i = 0; i < rows.length; i++){
+                if(i % 2 == 0){
+                    rows[i].className = evenrow;
+                }else{
+                    rows[i].className = oddrow;
+                }
+            }
+        }
+    }
+}
+window.onload=function(){
+    altRows('powTable','powevenrowcolor','powoddrowcolor');
+    altRows('tecTable','tecevenrowcolor','tecoddrowcolor');
+    altRows('stmTable','stmevenrowcolor','stmoddrowcolor');
+    altRowsClass('altrowstable');
+}
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////             以下为首页部分JS代码               ////////////
+////////////////////////////////////////////////////////////////////////
+
+//定义了按下不同的button按键页面执行的操作
+function onclickButton(buttonID) {
+    buttons = document.querySelector('#buttons').querySelectorAll('input');
+    for (i=0; i<buttons.length ; i++){
+        if(buttonID == buttons[i].id) {
+            document.getElementById(buttons[i].id.replace('Button','Div')).style.display='block';
+            document.getElementById(buttons[i].id).className = 'buttonChosenClass';         
+        }else{
+            document.getElementById(buttons[i].id.replace('Button','Div')).style.display='none';
+            document.getElementById(buttons[i].id).className = 'buttonClass';
+        }
+    }
+}
+
+//定义了按下不同的radio后页面执行的操作
+function onclickRadio(radioID) {
+    radioParentForm = document.getElementById(radioID).parentNode.parentNode;
+    radios = document.querySelector('#' + radioParentForm.id).querySelectorAll('input')
+    for (i=0; i<radioParentForm.length ; i++){
+        if(radioID == radios[i].id) {
+            document.getElementById(radios[i].id.replace('Radio','Div')).style.display='block';
+            //document.getElementById(radios[i].id).className = 'radioClass';
+            document.querySelector('#' + radios[i].id).checked = true;    
+        }else{
+            document.getElementById(radios[i].id.replace('Radio','Div')).style.display='none';
+            //document.getElementById(radios[i].id).className = 'radioClass2';
+        }
+    }
+}
+
+newVersion=''; //newVersion='>DoaxTools_v3.10.hta'.slice(12,-4);
+newversion=false;
+updateUrl='https://github.com/clcccc/DOAX'   
+xmlHttps = new XMLHttpRequest(); 
+xmlHttps.onreadystatechange = function() {
+    if (xmlHttps.readyState==4) {
+        toolName=xmlHttps.responseText.match(/>DoaxTools_v.*.hta/);
+        if(toolName) {newVersion=toolName[0].slice(12,-4)}
+        if(newVersion) {
+            if(parseInt(newVersion.split('.')[0]) > parseInt(version.split('.')[0])) { newversion = true }
+            if(parseInt(newVersion.split('.')[0]) < parseInt(version.split('.')[0])) { newversion = false }
+            if(newVersion.split('.')[0] == version.split('.')[0]) { if(parseInt(newVersion.split('.')[1]) > parseInt(version.split('.')[1])) {newversion = true} else {newversion = false} }
+        }
+        if(newversion) {
+            document.getElementById('checkVersion').style.color='green';
+            document.getElementById('checkVersion').title='发现新版本，点击下载！'
+            document.getElementById('checkVersion').href='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'
+        }
+    }
+}
+xmlHttps.open("GET", updateUrl, true);
+xmlHttps.send(null);
+
+//退出程序
+function CancelScript() {
+    self.close()
+}
+
+//帮助提示
+function HelpScript() {
+    alert("声明：\n    因为doax.cc近期无法访问，故做此小工具以自用为主。\n    脚本主要以html+js组成，涉及的所有代码您均可随意增、删、改、挪，但禁止用于商业用途！ \n    由于本人能力一般，水平有限，代码比较臃肿、混乱，且bug在所难免，请见谅！\n    脚本中所涉及的所有数据都是贴吧搜索而得，本人不对其准确性负任何责任！所涉及的任何数据若与doax.cc不一致都应以后者为准。 \n    如您发现该工具有任何地方伤及您的权益，请及时告知，我将无条件配合整改！ \n\n    现知此工具现在存在以下问题：\n    ①部分新女孩的属性、饰品、生日等信息未知，故在女孩属性模块有部分数据空白，且在实用计算-涂油提升项有关新女孩的力技体属性值可能不准确.\n    ②主要耗材-篮子项的数据未得到验证，但整体看起来问题不大. \n    ③实用计算-礼物经验项中礼物种类对应的经验值是我模糊记忆的，可能不准确。\n    ④只总结出了女孩50级后每级增加的力量和技巧的规律，未能总结出体力增加的规律，故只能将女孩属性增长值列了一个数组. \n\n    如您知晓以上任何问题的答案或发现任何Bug请在QQ群@卑微小萌新！ 或在百度贴吧@长得磕碜还差钱！\n\n    不胜感激！");
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////           以下为女孩属性部分JS代码             ////////////
+////////////////////////////////////////////////////////////////////////
+
+//将girlAttArr数组的有用信息分别生成力量女孩、技巧女孩、体力女孩三个表格
+function createGirlAttTab(att) {
+    for (var i = 0; i < girlAttArr.length; i++) {
+        //创建行
+        if(girlAttArr[i][9] == att) {
+            trs = document.createElement('tr');
+            var tbody = document.querySelector(('#'+att));
+            tbody.appendChild(trs);
+            var arr=[1,11,2,3,4,5,6,7,8,10]
+            girlAttArr[i][11]=1
+            for(var k in arr) {
+                //创建单元格
+                var td=document.createElement('td');
+                //把对象里面的属性值 给td
+                td.innerHTML=girlAttArr[i][arr[k]];
+                trs.appendChild(td);
+            }
+        }
+    }
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////           以下为往期活动部分JS代码             ////////////
+////////////////////////////////////////////////////////////////////////
+
+oldUrlArr = [ ['191203', 'https://game.doaxvv.com/cn/info/2275.html'],['191126', 'https://game.doaxvv.com/cn/info/2243.html'],['191119', 'https://game.doaxvv.com/cn/info/2227.html'],['191112', 'https://game.doaxvv.com/cn/info/2178.html'],['191105', 'https://game.doaxvv.com/cn/info/2157.html'],['191029', 'https://game.doaxvv.com/cn/info/2136.html'],['191023', 'https://game.doaxvv.com/cn/info/2124.html'],['191016', 'https://game.doaxvv.com/cn/info/2106.html'],['191009', 'https://game.doaxvv.com/cn/info/2040.html'],['191002', 'https://game.doaxvv.com/cn/info/1992.html'],['190925', 'https://game.doaxvv.com/cn/info/1961.html'],['190918', 'https://game.doaxvv.com/cn/info/1894.html'],['190911', 'https://game.doaxvv.com/cn/info/1878.html'],['190904', 'https://game.doaxvv.com/cn/info/1859.html'],['190828', 'https://game.doaxvv.com/cn/info/1836.html'],['190821', 'https://game.doaxvv.com/cn/info/1822.html'],['190814', 'https://game.doaxvv.com/cn/info/1797.html'],['190807', 'https://game.doaxvv.com/cn/info/1785.html'],['190731', 'https://game.doaxvv.com/cn/info/1764.html'],['190724', 'https://game.doaxvv.com/cn/info/1677.html'],['190717', 'https://game.doaxvv.com/cn/info/1661.html'],['190710', 'https://game.doaxvv.com/cn/info/1632.html'],['190703', 'https://game.doaxvv.com/cn/info/1598.html'],['190626', 'https://game.doaxvv.com/cn/info/1586.html'],['190619', 'https://game.doaxvv.com/cn/info/1565.html'],['190612', 'https://game.doaxvv.com/cn/info/1539.html'],['190605', 'https://game.doaxvv.com/cn/info/1516.html'],['190529', 'https://game.doaxvv.com/cn/info/1499.html'],['190522', 'https://game.doaxvv.com/cn/info/1456.html'],['190515', 'https://game.doaxvv.com/cn/info/1267.html'],['190508', 'https://game.doaxvv.com/cn/info/1154.html'],['190501', 'https://game.doaxvv.com/cn/info/1110.html'],['190424', 'https://game.doaxvv.com/cn/info/937.html'],['190417', 'https://game.doaxvv.com/cn/info/849.html'],['190410', 'https://game.doaxvv.com/cn/info/721.html'],['190327', 'https://game.doaxvv.com/cn/info/361.html'] ]
+hisUrlArr = ['https://game.doaxvv.com/production/html/information/event_gl_0407_220526_1_0_03270f5dec5d3cee28e6491fee3956c249a3fe358499028a7e431875d3c0af82_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0406_220519_1_0_860f1cf9216a023b970c637dae1231a85235f662285982868b38413536554b62_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0405_220512_1_0_5ca9ddafab118e0e851c80fbc32cc695eade771a0ce6690c7640e7b0c6d603ae_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0404_220506_1_0_b423ffac60c931ba4fdc3559d51f984c40174958e35f50d54b4ff86843efd9c7_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0403_220428_1_0_91009486148849375a54414b650be1ae1a61da2404bc672109fcafb6228700a1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0402_220419_1_0_94900ebd5e173cd9ce89b48659bfa97d0a1fe0f2a9a87c04dd5c6518599964f7_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0401_220412_1_0_e17a0006720ece0d318b6b5750f810aa34f0d80501ed6e03903ef0e0ad5ba8ae_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0400_220405_1_0_fc0eb1eaeb024c67bcac2e4386c35d58ba9a16e2f9a4f941e0ac0397b9e3fc48_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0351_220325_1_0_3eb79eae880d1d7391156ec0a29b1b49357bffccd14fda434fb611071f33001d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0350_220317_1_0_f5118651c42b5921105d304afc90945d7d14342c4e9e88a1359fc8702dc00f17_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0349_220310_1_0_411ddbc68612429f4d4ce59193962d6d1b2610464fececa599577e6283c12479_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0348_220303_1_0_09e71dd10fa0d5377ea4452535276ad39dac7954d865e0c391fdecc3f1f60843_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0347_220224_1_0_e96c003cf8e5047f6cdce6615d183df7b6c09fd03823441182bfd84fd914b08d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0346_220217_1_0_8f7a72209286d116fd16e69c3cddaae05a29e77a7f8cf06f9d3566be147d8e82_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0345_220210_1_0_0dfbac130cff77421f46dcfc8aa93e474084785b0546266fc7c46daec0c32682_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0344_220203_1_0_335f77fe4d618d4ffc8f720cd008ba1a18204e87989baa4b8b9ba2d11a319323_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0343_220128_1_0_69a1e29c5d87c165a17a56ddcbc24cb4be433694fcf407d9b25b47ab0c46e5a6_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0342_220120_1_0_61637e943d939bed12a8bc6739ea88b6156abaf3f10bcd422b0debbfea247a76_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0341_220113_1_0_5aba57632e40e87eb8ac706d8b09a2e26587f91da8712490daf7e9331cdb5ac4_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0340_220106_1_0_869c5a9aff2eb59fc19ad4d21b9045df00ed136c38d0cad84d60bdaae5adcd25_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0339_211230_1_0_e50607d433d55fbf5c85164f31cf206bfe392461acaa220cc686b3971056dc87_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0338_211223_1_0_424622ae2df0b6119c8d57a1f1ab510ae8326dc9b856b239c9c80324254461dc_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0337_211216_1_0_6c0d56da87bcee5d626c53fa2263cac4fcea2ca1796e7119da0e129bfa546d6d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0336_211209_1_0_e898ad67f95507bb8b4f9f1092dcea0c92fbac0fc46458cecbe696eddbfa86ca_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0335_211202_1_0_76ef9bfa3f752d2906e518fe4be0cd494cb5f54ebd128753c0fd7c1eed1a89c2_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0334_211125_1_0_314b6add4e3170d0f81ddb23eef4fbd8908fee837670fd3435abbcfbe3f80605_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0333_211117_1_0_b45b40403bad24fcef94ead0ba503f6392f453bb9d355b1696e9b7ac4a01095f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0332_211110_1_0_3ef57ee4649f0cd5dc431163276771ed6625153b885526f6872c228cb1084f59_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0331_211103_1_0_8264c21424dd9e85ee649697bf8b9b37870634cca8e43299775874f0df28b2d3_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0330_211027_1_0_d105460206156c10e9922cbbf2a09826ee1734acb310d7ea16077d0d1c80cd3f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0329_211020_1_0_c7c7575321fe78fb7bd0402c7a14dc00143bd51d1c7a7a3d73b6941e4f38fb9b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0328_211013_1_0_14620d278d0339be8c24cc8a6bbda031210accf7e65b217939c30f3409122905_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0327_211006_1_0_4d0786363b915836bb7d3754a9d36166d040826f694273af8368140cd4eefee9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0326_210929_1_0_f58a1a0af9f25b55f7c61f1b0cb28cae63a987136355639163c6eb3cdb820162_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0325_210923_1_0_f653ad3443315f28201f8886b9126f22139dfe35dea0e6f778408ebd76bcaa70_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0324_210916_1_0_d84a1dd9c172e819a4e4ec672d83964ae8d87957396fa5066aae9ef11e91c1d6_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0323_210909_1_0_944501366e5e3a16884dacb7f23cbcfaad6b47fa15b381e92a3b6909c48e6a6d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0322_210901_1_0_229c287870ddf3c5e0a0ecf3a886c237fe6a1fa9f62daa2a65069be3ba0b6acf_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0321_210825_1_0_3adbf0fd6790d9b35a4c9b54bb805ea51440ccf050ecc13d0ff344854bf73015_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0320_210818_1_0_dda4a49e488cc3855e5955613772ed520792f54c0f8b7a63e886f536412eca32_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0319_210811_1_0_714cf2e9eadc6a86d99e533971cba64597f6e03b08bd6c9e350230eeaea068f1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0318_210804_1_0_8a96936fb4e0a3380855bc455add993b759197f0c1eb6901f94f2e763e21c931_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0317_210729_1_0_746a99b77e094901ac999717229782d682c61df68d90d0db1887559b806902de_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0316_210722_1_0_b17f9836e4e157b57ef4dd8c675bd6929017fbc2efc331265e0149a69f12b284_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0315_210715_1_0_a978c35c547fbf37061284c6c18a2a9964da66f9eebbc96a296cfc3bc9c0a267_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0314_210708_1_0_d2c73841c85e0c6e4e0b231b474fc7c971005ff2ade4cad4daef2923c5a43833_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0313_210701_1_0_d1f5a21ff11d9e3a9c7155169d5bcfdc2f320ef88ca77b5fd7dca3d748453158_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0312_210624_1_0_99ef09cd2820382f65f30f9e349cf7f96bd6c551c71002ce69d874360291681a_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0311_210617_1_0_866eefbc38adfe855528295f9e1a45da135b75b4c0d6813730a2ac20b46e30f3_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0310_210610_1_0_4cef01f81b65119631d7bdfc659d9f6c0c90f7de674df00d573c5b3d98ae846a_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0309_210603_1_0_485c128c104dff12190f7e21eff2976271cee696babfa2bbcf53ea0fa2a11dbe_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0308_210527_1_0_b92f41ce9f2fc548d4aa2e4a5bcd43d344bfc3a29bb8a371af007e3b47ec3b97_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0307_210519_1_0_eff4d3508cdcef9785dd0570fb5e2d06ea52fdaa91ad2fee5c4caec73652cbae_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0306_210512_1_0_bc80368419f7a5de73d784cb4d11e938316d8abb0d8558351d774fe71941a814_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0305_210505_1_0_ee14dd6e196847f8af44719535ed83fe4b1d769fc5e3f27c08036dd0497389ae_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0304_210428_1_0_3337eea0601980c477f6b16ab42eaa42ec8ebe2695719a3cb37eea12ec79cd75_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0303_210421_1_0_1f05a3d1fc0e451fb4f57007d70b5fe3b34dd5b6f8e791e7f74ba6479a01ed44_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0302_210414_1_0_4851f0c3c3917dece5e8b8c025fb4e566bf4e7d0438879afb1b50f302b4b5b68_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0301_210407_1_0_86ddab803c69535d2bb4a98461706c7883f262b1aa2358785d19c84f738b4e97_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0300_20210330_1_0_5ecc5d68380bcb62e4943ebc62597e52c4ac15a15f6e065cd89f7f6da801ec45_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0264_210323_1_0_9b5b11fd7455bc87e6f50622a07fab1e71659a37f3de59fb44220103a5522f1f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0263_210316_1_0_017c61a8b5310735d932ed01d0ace7a93714273f68da77539eca158005b0a6ed_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0262_210310_1_0_87fcbb909b6f23cd915a785ba6736f760a9f8f1416b6c7b50e42d2ee79cf5219_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0261_210303_1_0_17f9cd67fdea3275d86ed96b099d8f6debbf90f8711f9b8e6556b7ea3cf3d0fa_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0260_210224_1_0_6c1b5601a1d016e542ef2f4f84c1ed581b8a40252398c424ee668c10d56c35f1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0259_210217_1_0_8a0fa855eec3e6cbd7c3ca57eec32af22c26751116e185bdb88bc1fef73cee45_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0258_210210_1_1_7f2d2754afee71909de9d86d66e9d1d60d15ebd37901b5415de04f71c469f977_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0257_210203_1_0_94d491c494418cba676ae998449981b2c8d0a01db123a8b13262c0f5feca2059_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0256_210127_1_0_222857e6335164b94e423e48703e017124f49957560073bb851531fccb7e441e_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0255_210120_1_0_45d87e2a4492fa9eb4184971b9de4d67788c68ef2aabdfa7fbe31dca261dadb9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0254_210113_1_0_8b2d21c70a50fc72075d1d1a8a97f9761813f7f2f0ba9a4b253c9380cfa17823_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0253_210106_1_0_8ff44cabd5c3b439046780d8a1514c0023f0914a636d1f20853c8986a57384f9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0252_201230_1_0_e8f8db2ac3bf708e711043dae340645aa8ddd1f99b0eb1f0b9bfb21b1605784b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0251_201223_1_0_1bc258ba96469ea35f6523792bc4918de33b05bf4015a86efd2d7acb7c366194_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0250_201216_1_0_53682c1b13af4fc0f03402fb8532d800b6e9632da41ea102419258913dbb1d37_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0248_201203_1_0_cfb31b28dfd9d1e3deaa03fc2311f266fa71081c7c0b591f0273b732d8339f84_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0247_201125_1_0_ed60c9c3cbdfecbcc0c32168839729809235c68a1a7ffcbead18780e191854e7_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0246_201118_1_0_7bd86f4b7fb46f451ee5d48eb1a7c08fb74c38ed527dc418bf6fc823f0d6c660_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0245_201111_1_0_b4b5613d2120513d8845703b86c26d14829d52e44bb6aef2b5aafcd4fafe711b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0244_201104_1_0_459e07ec34c216f510851f91979668fce97ed97cfd2232856756bb4831f9596d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0243_201028_1_0_c7e157bb2f8ec22416068703ed3928c91a5d3e7c7e22ff8d0cee89642537899e_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0242_201021_1_0_3369007fcfa9c232614822b48b86fcd00be4962c2bea3498ea59d22a49fb357b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0241_201014_1_0_744bb0d8459216b2cdec8bb1dafa75cf8ae245ee83821c71e282647be2b37a12_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0240_201007_1_0_8eed6148b4deed68f83dc74cb892815e6a8a469dc6f4ce4d355d74c23b25fa52_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0239_200930_1_0_cc6731404f2461f5652f41702c8065b2ce1c4e9bb0ca310129c37a30975499c4_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0238_200923_1_0_afe36dcff347f07ca113c836a589383adbc40b8028025e0c08e6a10feaf073f1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0237_200916_1_0_c9f68b03271b4f41e5d82d49deed1d163343ee3da9533c86b13349697a9b29c2_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0236_200909_1_0_c61cdfc592b051434f9396e1ba03a803b5f27bcf465051c368afd0796bc262ed_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0235_200902_1_0_044e53dde877258415393229f0007d5ef7a863c214bf94feb166333b0ae7144b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0234_200826_1_0_cdcf7b486f409df2e4ee364b2d782c52d52d760fd55a9a89f5172298b24f0282_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0233_200819_1_0_2701d9ad4d36011893fda7096e4a8f01f2316ab1385acaacb427df114ad42101_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0232_200812_1_0_447334a831dcd25e6329ae5615deacb4e4581c96b56571c49caeed1e90d7405b_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0231_200805_1_0_b63c8750060cfb86bdd876adb02881599d158257d5ae74d923b10fb7427ef9e7_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0230_200729_1_0_372faa1bae47668ab9a85441bccd2321361e9687d85b8f80ed06c2d5f0a3d79d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0229_200722_1_0_bcba97f54e3e604bf4f13516951ac4335b5288e951b9bd88b75f17aa9b1304a9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0228_200715_1_0_39c08c56aedc794aa4836f30e6a3c336887c3db80d81f56f0f11fc076c2f97e9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0227_200708_1_0_797ddfb6d5603e52b52adb34637c40add4cff38ad9b6fa22631215491856b27f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0226_200701_1_0_21c646b5cf5a34108aedee6295751a5be7d4e7f2ba0dc72998c13a44cd996155_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0225_200624_1_0_102106bac82520634e59d9335c4920f2d8ba1f67398b362327bf71c766a431cc_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0224_200617_1_0_15ab445e2f45c16244f1c8e7583740b5ebc293f23ac19770bdb6d6ab361ce4a2_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0223_200610_1_0_ac42a80e693e93ef0979b2a2dc8f8c5efb8d0b55baa12aead088c5a1b3aa7b5d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0222_200603_1_0_296613274327f407f5fe070557cea5e66cf5f6877ebad7d3098a3b4072491ffe_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0221_200527_1_0_66112ee09bf04b8365eb1da991c4643920d487cdc6b0df8a8625ed8fc5f2f44f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0220_200513_1_0_9fd64cf894275fa19a0a6212a29086adbea48f9392c182f9a2e7e541c0071e43_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0219_200506_1_0_e78e19d441befa879c26d463ee1f6abdd1406ad9fe0770938ac997079b0ad250_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0218_200429_1_0_cae91f88e22801ef0447bd614077196d2d203564c41fc8afee8b8e06a8144ca6_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200422_1_0_3fe7dcb71bc3b3bcf24713103f0902510432bde22b727aa17b57cd99e11e9d74_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200408_1_1_b754fa10972cc4eda1104fc2f62bdb5db4724c475d696b9769130ed68a7211e0_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200408_1_0_4af15b45e03bfbbd43732762e74f13b9b4b49042e65736a2f10b577a05db30db_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0216_200401_1_0_48acd148a1d4c5bdf239ea961636afafdc5da9e45a415641b8c3f7eb1d90944d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0215_200325_1_0_fdd85a98511dc72e1dded0c8a2713104d8683c80ec46ca1398e606d74dd913f5_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0215_200325_1_0_fdd85a98511dc72e1dded0c8a2713104d8683c80ec46ca1398e606d74dd913f5_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0214_200318_1_0_b5623eb0813cb69fbaa00995182dd5e32dda88076beb9aaa762a9b471f0ea206_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0213_200311_1_0_67bb0aa3d283a67df73c5570933adb9cb839083f851f6c7c8516a41ee018d0c1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0212_200304_1_0_b67a5f4cc4ed98416651334bc6e8977a210e541efed24db5960dc2d1a53ee970_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0211_200226_1_0_cd2321d7c550748df288a3b25a132173eb6dd16f4430dc73d93aebcdd77b18bd_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0210_200219_1_0_d80c760d20fe76b286da597bd19e6a267dc380fb42f62b0b72fd28001291ec14_cn.html?GameView=Y','http://game.doaxvv.com/production/html/information/event_gl_0209_200212_1_0_5a8791a101a07d16b408ce15222169602dc629487699e3ab2f100c533d868d19_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0208_200205_1_0_fce148820e4f7d236cdfdd2137f489b8aaf8848832d1fc9f9167571353f76402_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0207_200129_1_0_7aa661df7ff5f9cc05a97c20252e1852cc05e7d1c9e6148a2e81ceb73a500579_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0206_200121_1_0_a6f7baad8c0ceecc4fb4949ffd029e6b38f99c3c940625885414e664853ec3b9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0205_200114_1_0_4de70f74627a743a1fcde9030f220ed039cc6f85f42905e999c490b0aaddc550_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0204_200107_1_0_8af1297d5994601f1244a0dc3f29d20b8dcb87b6682f09ba98d6f641610d9e87_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0203_191231_1_0_31a70af9f24c61a4a49373ededf640b0220a5904f810e1e3dd0ac4b9ac23a05f_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0202_191224_1_0_b306c30b6de607d041ff5bca301e02dadf1aea1311c4764b4f5cd59d3e8df0c1_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0201_191217_1_0_dfdb801c90b54dc11aad06c831f9bf5e2aa00071ec07154c52048467e0f3969a_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0137_191210_1_0_ecbb05d0f35623bfee6d84266c3a8592c2493adfcc26fa8fad73b7f2ceaa72e9_cn.html']
+hisUrlArr = ['https://game.doaxvv.com/production/html/information/event_gl_0222_200603_1_0_296613274327f407f5fe070557cea5e66cf5f6877ebad7d3098a3b4072491ffe_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0221_200527_1_0_66112ee09bf04b8365eb1da991c4643920d487cdc6b0df8a8625ed8fc5f2f44f_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0220_200513_1_0_9fd64cf894275fa19a0a6212a29086adbea48f9392c182f9a2e7e541c0071e43_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0219_200506_1_0_e78e19d441befa879c26d463ee1f6abdd1406ad9fe0770938ac997079b0ad250_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0218_200429_1_0_cae91f88e22801ef0447bd614077196d2d203564c41fc8afee8b8e06a8144ca6_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200422_1_0_3fe7dcb71bc3b3bcf24713103f0902510432bde22b727aa17b57cd99e11e9d74_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200408_1_1_b754fa10972cc4eda1104fc2f62bdb5db4724c475d696b9769130ed68a7211e0_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0217_200408_1_0_4af15b45e03bfbbd43732762e74f13b9b4b49042e65736a2f10b577a05db30db_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0216_200401_1_0_48acd148a1d4c5bdf239ea961636afafdc5da9e45a415641b8c3f7eb1d90944d_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0215_200325_1_0_fdd85a98511dc72e1dded0c8a2713104d8683c80ec46ca1398e606d74dd913f5_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0215_200325_1_0_fdd85a98511dc72e1dded0c8a2713104d8683c80ec46ca1398e606d74dd913f5_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0214_200318_1_0_b5623eb0813cb69fbaa00995182dd5e32dda88076beb9aaa762a9b471f0ea206_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0213_200311_1_0_67bb0aa3d283a67df73c5570933adb9cb839083f851f6c7c8516a41ee018d0c1_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0212_200304_1_0_b67a5f4cc4ed98416651334bc6e8977a210e541efed24db5960dc2d1a53ee970_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0211_200226_1_0_cd2321d7c550748df288a3b25a132173eb6dd16f4430dc73d93aebcdd77b18bd_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0210_200219_1_0_d80c760d20fe76b286da597bd19e6a267dc380fb42f62b0b72fd28001291ec14_cn.html?GameView=Y','http://game.doaxvv.com/production/html/information/event_gl_0209_200212_1_0_5a8791a101a07d16b408ce15222169602dc629487699e3ab2f100c533d868d19_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0208_200205_1_0_fce148820e4f7d236cdfdd2137f489b8aaf8848832d1fc9f9167571353f76402_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0207_200129_1_0_7aa661df7ff5f9cc05a97c20252e1852cc05e7d1c9e6148a2e81ceb73a500579_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0206_200121_1_0_a6f7baad8c0ceecc4fb4949ffd029e6b38f99c3c940625885414e664853ec3b9_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0205_200114_1_0_4de70f74627a743a1fcde9030f220ed039cc6f85f42905e999c490b0aaddc550_cn.html?GameView=Y','https://game.doaxvv.com/production/html/information/event_gl_0204_200107_1_0_8af1297d5994601f1244a0dc3f29d20b8dcb87b6682f09ba98d6f641610d9e87_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0203_191231_1_0_31a70af9f24c61a4a49373ededf640b0220a5904f810e1e3dd0ac4b9ac23a05f_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0202_191224_1_0_b306c30b6de607d041ff5bca301e02dadf1aea1311c4764b4f5cd59d3e8df0c1_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0201_191217_1_0_dfdb801c90b54dc11aad06c831f9bf5e2aa00071ec07154c52048467e0f3969a_cn.html','https://game.doaxvv.com/production/html/information/event_gl_0137_191210_1_0_ecbb05d0f35623bfee6d84266c3a8592c2493adfcc26fa8fad73b7f2ceaa72e9_cn.html']    //测试用
+campaignUrlArr=[];
+eventDate='';
+k=0 ;
+
+//负责关键函数的调用，根据input的查询日期调用函数
+function getHistoryCampaign(date){
+    lastDay=hisUrlArr[0].match(/_[0-9]{6,8}_/)[0].match(/[0-9]{6}_/)[0].match(/[0-9]{6}/)[0];
+    document.getElementById('waitingSign1').style.color='red'
+    document.getElementById('waitingSign2').style.color='red'
+    document.getElementById('waitingSign3').style.color='red'
+    if (date > '191203' && date < lastDay) {
+        document.getElementById('waitingSign1').style.color='green'
+        for(i=0; i<hisUrlArr.length; i++) { 
+            if(hisUrlArr[i].match(/_[0-9]{6,8}_/)[0].match(/[0-9]{6}_/)[0].match(/[0-9]{6}/)[0] <= date) {
+                //alert(hisUrlArr[i]);
+                hisUrl = hisUrlArr[i];
+                break;
+            }
+        }
+        getExistingSource(hisUrl);
+    } else if (date >= '190327' && date <= '191203') {
+        document.getElementById('waitingSign1').style.color='green'
+        for(i=0; i<oldUrlArr.length; i++){
+            if(oldUrlArr[i][0] <= date){
+                oldUrl = oldUrlArr[i][1];
+                break;
+            }
+        }
+        getExistingSource(oldUrl);
+    } else if (date < '190327') {
+        document.getElementById('waitingSign1').style.color='green'
+        alert("游戏在2019年03月27日开始发售！");
+        document.getElementById("source").value = 'https://game.doaxvv.com/cn/info/361.html'
+        document.getElementById('imgHref').href = 'https://game.doaxvv.com/cn/info/361.html'
+        document.getElementById('waitingSign2').style.color='green'
+        document.getElementById('waitingSign0').innerHTML=''
+        imgLoad('https://game.doaxvv.com/wp-content/uploads/2019/03/1a1_gacha_m_cn.png',imgLoaded); 
+    } else {
+        getPageSource(date);
+    }
+}
+
+//获取从startPage到endPage之间的URL，匹配到inputDate则函数结束。应用于oldUrlArr和hisUrlArr之外的部分
+function getPageSource(inputDate,startPage,endPage) {
+    if(!startPage || startPage<1){startPage=1;}
+    if(!endPage || endPage==0){endPage=200;}
+    i = startPage; //alert(i);
+    j = endPage;
+    d = inputDate;
+    i == 1? pageUrl = 'https://game.doaxvv.com/cn/news_list/index.html' : pageUrl = 'https://game.doaxvv.com/cn/news_list/page/' + i + '/index.html' ;
+    xmlHttp = new XMLHttpRequest();                  //创建XMLHttpRequest对象
+    xmlHttp.onreadystatechange = getCampaignSource;       //设置回调函数
+    xmlHttp.open("GET", pageUrl, true);
+    xmlHttp.send(null);
+}
+
+function getCampaignSource() {
+    if (xmlHttp.readyState == 4) {
+        var pageCampaignUrlArr = xmlHttp.responseText.match(/http(s)?\:\/\/game.doaxvv.com\/production\/html\/information\/event_gl_(.*?)_cn.html(\?GameView=Y)?/g);
+        i++; 
+        if(pageCampaignUrlArr) {
+            pageCampaignUrlNum = pageCampaignUrlArr.length
+            campaignUrlNum = campaignUrlArr.length
+            lastEventDate = pageCampaignUrlArr[pageCampaignUrlNum-1].match(/_[0-9]{6,8}_/)[0].match(/[0-9]{6}_/)[0].match(/[0-9]{6}/)[0];
+            if(lastEventDate > d && i <= j) {  
+                if(campaignUrlArr != '') {campaignUrlArr = campaignUrlArr.concat(pageCampaignUrlArr); } else {campaignUrlArr = pageCampaignUrlArr; } ; //alert(campaignUrlArr);
+                if(document.getElementById("sourceBox").checked) { 
+                    document.getElementById("source").value = campaignUrlArr 
+                    if ( lastEventDate <= 191210 ) {
+                        document.getElementById('waitingSign0').innerHTML='&#x270C;';
+                        document.getElementById('waitingSign0').style.color='green';
+                        return;
+                    }
+                }
+                getPageSource(d,i,j)
+            } else { 
+                for(k=0; k<pageCampaignUrlNum; k++) { 
+                    eventDate = pageCampaignUrlArr[k].match(/_[0-9]{6,8}_/)[0].match(/[0-9]{6}_/)[0].match(/[0-9]{6}/)[0];
+                    campaignUrlArr[campaignUrlNum+k] = pageCampaignUrlArr[k] ;
+                    if(eventDate <= d) { break; }
+                }
+                if(document.getElementById("sourceBox").checked) { document.getElementById("source").value = campaignUrlArr }
+                document.getElementById('waitingSign1').style.color='green'; 
+                document.getElementById('waitingSign0').innerHTML='&#x270C;'
+                document.getElementById('waitingSign0').style.color='green'; 
+                if (i>j) { return; }
+                campaignUrl = pageCampaignUrlArr[k]; 
+                xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = imgSource;
+                xmlHttp.open("GET", campaignUrl, true);
+                xmlHttp.send(null);
+            }
+        } else {
+            if (i>=j) { 
+                if(document.getElementById("sourceBox").checked) { 
+                    document.getElementById("source").value = campaignUrlArr ;
+                    document.getElementById('waitingSign0').innerHTML='&#x270C;'
+                    document.getElementById('waitingSign0').style.color='green'; 
+                }
+                return; 
+            }
+            getPageSource(d,i,j)
+        }
+    }
+}
+
+//匹配已保存过的URL（即inputDate匹配到了hisUrlArr或oldUrlArr）
+function getExistingSource(url) {
+    campaignUrl = url
+    xmlHttp = new XMLHttpRequest(); 
+    xmlHttp.onreadystatechange = imgSource;
+    xmlHttp.open("GET", campaignUrl, true);
+    xmlHttp.send(null);
+}
+
+//被其他函数调用，根据其调用函数传递的URL地址，抓取匹配的图片，并将图片反馈至页面同时将传递来的URL值写入textarea并反馈结束信号
+function imgSource(){
+    if (xmlHttp.readyState == 4) {
+        var imgUrl = xmlHttp.responseText.match(/img\/(.*?)_cn.png/); 
+        if(imgUrl) {
+            imgUrl = imgUrl[0]
+            imgUrl = 'https://game.doaxvv.com/production/html/information/' + imgUrl
+        } else {
+            imgUrl = xmlHttp.responseText.match(/img(.*?)_cn.png/); 
+            if(imgUrl) {
+                imgUrl = imgUrl[0].match(/\/(.*?)_cn.png/)[0]; //alert(imgUrl);
+                imgUrl = 'https://game.doaxvv.com/' + imgUrl
+            } else { imgUrl = '' }
+        }
+        if(!document.getElementById("sourceBox").checked) {
+            document.getElementById('source').value = campaignUrl ; 
+            document.getElementById('waitingSign0').innerHTML=''
+            imgLoad(imgUrl,imgLoaded); 
+        }
+        document.getElementById('imgHref').href = campaignUrl; 
+        document.getElementById('waitingSign2').style.color='green'
+    }
+}
+
+//判定图片是否加载完成
+function imgLoad(imgUrl,callback) {
+	  var img = document.getElementById('campaignImg');
+    img.src = imgUrl ;
+    img.onload = function() { //图片下载完毕时异步调用callback函数。
+        callback.call(img);   // 将callback函数this指针切换为img。
+    }
+}
+//图片加载完成后给出反馈信号
+function imgLoaded(){
+    document.getElementById('waitingSign3').style.color='green'
+}
+
+//获取新hisUrlArr中没有的新链接，仅在爬网址界面input为空时调用。注意，获取到的链接已经经过加工，可以直接粘贴到hisUrlArr的开始部分
+function getNewSource(startPage) {
+    if(!startPage || startPage<1){startPage=1;}
+    i = startPage
+    i == 1? url = 'https://game.doaxvv.com/cn/news_list/index.html' : url = 'https://game.doaxvv.com/cn/news_list/page/' + i + '/index.html' ;
+    xmlHttp = new XMLHttpRequest();                  //创建XMLHttpRequest对象
+    xmlHttp.onreadystatechange = writeNewSource;     //设置回调函数
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
+}
+
+//将获取到的新链接经过处理后写入textarea
+function writeNewSource() {
+    if (xmlHttp.readyState == 4) {
+        var partUrlArr = xmlHttp.responseText.match(/http(s)?\:\/\/game.doaxvv.com\/production\/html\/information\/event_gl_(.*?)_cn.html(\?GameView=Y)?/g);
+        i++;
+        if(partUrlArr) {
+            for(l = 0; l < partUrlArr.length; l++) {
+                if(partUrlArr[l] <= hisUrlArr[0]) { break; } else {
+                    campaignUrlArr = campaignUrlArr + "\'" + partUrlArr[l] + "\'," ;
+                    document.getElementById("source").value = campaignUrlArr ; 
+                }
+            }
+            if(partUrlArr[partUrlArr.length-1] <= hisUrlArr[0]) {
+                document.getElementById('waitingSign0').innerHTML='&#x270C;'
+                document.getElementById('waitingSign0').style.color='green';
+                return;
+            }
+        }
+        getNewSource(i);
+    }
+}
+
+//检查sourceBox是否被选中，并根据返回值执行接下来的动作
+function checkSourceBox() {
+    sourceBox=document.getElementById("sourceBox").checked
+    if(sourceBox){ 
+        document.getElementById("campaignCheckSpan").style.display = 'none';
+        document.getElementById("campaignSourceSpan").style.display = 'block';
+        document.getElementById("textarea").style.display = 'block';
+        document.getElementById("imgP").style.display = 'none';
+    } else {
+        document.getElementById("campaignSourceSpan").style.display = 'none'; 
+        document.getElementById("campaignCheckSpan").style.display = 'block';
+        document.getElementById("textarea").style.display = 'none';
+        document.getElementById("imgP").style.display = 'block';
+    }
+}
+
+//日历部分JS代码
+var month_leapYear = [31,29,31,30,31,30,31,31,30,31,30,31];
+var month_normal = [31,28,31,30,31,30,31,31,30,31,30,31];
+var month_name = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var my_date = new Date();
+var my_year = my_date.getFullYear();
+var my_month = my_date.getMonth();
+var my_day = my_date.getDate();
+
+function dayStart(month, year) {
+    var tmpDate = new Date(year, month, 1);
+    return (tmpDate.getDay());
+}
+
+function daysMonth(month, year) {
+    if ((year % 400 === 0) || (year % 100 !== 0 && year % 4 === 0)) {
+        return (month_leapYear[month]);
+    } else {
+        return (month_normal[month]);
+    }
+}
+
+function refreshDate(){
+    var str = "";
+    var totalDay = daysMonth(my_month, my_year); //获取该月总天数
+    var firstDay = dayStart(my_month, my_year); //获取该月第一天是星期几
+    var myclass;
+    for(var i=0; i<firstDay; i++){ 
+        str += "<li></li>"; //为起始日之前的日期创建空白节点
+    }
+    for(var i=1; i<=totalDay; i++){
+        if((i<my_day && my_year==my_date.getFullYear() && my_month==my_date.getMonth()) || my_year<my_date.getFullYear() || ( my_year==my_date.getFullYear() && my_month<my_date.getMonth())){ 
+            myclass = " class='beforeToday'"; //当该日期在今天之前时，以浅灰色字体显示
+        }else if (i==my_day && my_year==my_date.getFullYear() && my_month==my_date.getMonth()){
+            myclass = " class='thisDay'"; //当天日期红色显示
+        }else{
+            myclass = " class='afterToday'"; //当该日期在今天之后时，以深灰字体显示
+        }
+        str += "<li"+myclass+"onclick='clickDay(this)'>"+i+"</li>"; //创建日期节点
+    }
+    cDay.innerHTML = str; //设置日期显示
+    cMonth.innerHTML = month_name[my_month]; //设置英文月份显示
+    cYear.innerHTML = my_year; //设置年份显示
+}
+
+function clickDay(em) {
+    document.getElementById("calendarID").style.display='none'
+    if(em.innerText<10){theDay = '0' + em.innerText} else {theDay=em.innerText} 
+    theMonth=my_month+1
+    if(theMonth<10){theMonth = '0' + theMonth} 
+    theDate=cYear.innerText.slice(2) + theMonth + theDay;
+    document.getElementById("historyDate").value=theDate;
+    getHistoryCampaign(theDate);
+}
+
+function preMonth(){
+    my_month--;
+    if(my_month<0){
+        my_year--;
+        my_month = 11;
+    }
+    refreshDate();
+}
+function nextMonth(){
+    my_month++;
+    if(my_month>11){
+        my_year++;
+        my_month = 0;
+    }
+    refreshDate();
+}
+function preYear(){
+    my_year--;
+    my_month = 11;
+    refreshDate();
+}
+function nextYear(){
+    my_year++;
+    my_month = 0;
+    refreshDate();
+}
+
+function showCalendar(){
+	document.getElementById("calendarID").style.display='block'
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////      以下为实用计算（比赛升级）部分JS代码      ////////////
+////////////////////////////////////////////////////////////////////////
+
+//设置键盘只允许输入整数，且最大值为maxValue，最小值minValue，该函数应用于几乎所有的输入框。
+var lastValue="", lastID=""
+function onkeyuper(inputID,minValue,maxValue) {
+    if (lastID!=inputID) {lastValue=""};
+    if (inputID.value.search("^[0-9]*$")==-1) {
+        if (inputID.value!="") {
+            inputID.value=lastValue
+        }
+        else {
+            lastValue=""
+        }
+    }
+    else {
+        if (parseInt(inputID.value)<parseInt(minValue) || parseInt(inputID.value)>parseInt(maxValue) ) {
+        	  inputID.value=lastValue
+        }
+        else {
+            lastValue=inputID.value
+        }
+    }
+    lastID = inputID
+}
+
+//根据岛主等级自动计算出相应的FP值并写入右侧输入框，该函数同时应用于女孩升级和代币计算两个部分
+function writeFP(Level,fp) {
+    //var Level=matchForm.yourLevel.value
+    if(eval(0)<parseInt(Level)&&parseInt(Level)<=eval(30)) {
+        document.getElementById(fp).value=204-(30-Level)*6
+    }
+    else if(eval(30)<parseInt(Level)&&parseInt(Level)<=eval(100)) {
+        document.getElementById(fp).value=414-(100-Level)*3
+    }
+    else if(parseInt(Level)>eval(100)) {
+        document.getElementById(fp).value=(Level-100)*2+414
+    }
+    else {
+        document.getElementById(fp).value=""
+    }
+}
+
+//计算当前等级升级到下级的经验值(假设当前的经验值为0)
+function witeNextExp() {
+    if(matchForm.currentGirlLevel.value=="") { document.getElementById("nextExp").value="" }
+    else { document.getElementById("nextExp").value=levelValue[matchForm.currentGirlLevel.value] }
+}
+
+//计算升级至目标等级所需要的总经验
+function writeTotalExp() {
+    if (matchForm.currentGirlLevel.value!="" && matchForm.targetGirlLevel.value!="" && parseInt(matchForm.targetGirlLevel.value)>parseInt(matchForm.currentGirlLevel.value) && matchForm.nextExp.value!="") {
+        i = parseInt(matchForm.currentGirlLevel.value)
+        var totalvalue=0
+        do {
+            totalvalue+=levelValue[i]
+            i++;
+        }
+        while(parseInt(i)<parseInt(matchForm.targetGirlLevel.value));
+        document.getElementById("totalExp").value=totalvalue+parseInt(matchForm.nextExp.value)-parseInt(levelValue[matchForm.currentGirlLevel.value])
+    }
+    else {
+        document.getElementById("totalExp").value=""
+    }
+}
+
+//计算需要比赛的总局数
+function writeTotalNum() {
+    if(matchForm.totalExp.value=="" || matchForm.exp.value=="") { document.getElementById("totalMatchNum").value="" }
+    else { document.getElementById("totalMatchNum").value=Math.ceil(parseInt(matchForm.totalExp.value)/parseInt(matchForm.exp.value)) }
+}
+
+//计算耗水量
+function writeWaterNum() {
+    if(matchForm.totalMatchNum.value!="" && matchForm.neededFP.value!="" && matchForm.fp.value!=""){ document.getElementById("totalWaterNum").value=Math.ceil(parseInt(matchForm.totalMatchNum.value)*parseInt(matchForm.neededFP.value)/parseInt(matchForm.fp.value)) }
+    else{ document.getElementById("totalWaterNum").value="" }
+}
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////      以下为实用计算（礼物经验）部分JS代码      ////////////
+////////////////////////////////////////////////////////////////////////
+
+var giftArr=[['&hearts;',5,0,0],['&hearts;',20,0,0],['&hearts;&hearts;',250,0,0],['&hearts;&hearts;&hearts;',500,0,0],['爱的奖励',20000,0,0],['感恩的表示',10000,0,0],['永恒闪耀天然石',5000,0,0],['幸福四叶草',1000,0,0],['其他礼物①',0,0,0],['其他礼物②',0,0,0],['统计',0]]
+function createGiftTab() {
+    for (var i = 0; i < giftArr.length; i++) {
+        //创建行
+        trs = document.createElement('tr');
+        var tbody = document.querySelector('#giftTable');
+        tbody.appendChild(trs);
+        for(var k in giftArr[i]) {
+            //创建单元格
+            var td=document.createElement('td');
+            //把对象里面的属性值 给td
+            td.innerHTML=giftArr[i][k];
+            if (k == 0 && i<4) {td.style.color="#FF0000";}
+            if (k == 0 && i == giftArr.length-1 ) {td.style.fontWeight="bolder"; }
+            trs.appendChild(td);
+        }
+    }
+    var tb = document.getElementById("giftTable")
+    tb.rows[giftArr.length].cells[1].colSpan = (tb.rows[giftArr.length].cells[1].colSpan) + 2
+}
+
+function EditTables(){
+    for(var i=0;i<arguments.length;i++){
+        SetTableCanEdit(arguments[i]);
+    }
+}
+
+//设置表格是可编辑的
+function SetTableCanEdit(table){
+    for(var i=1; i<table.rows.length-1;i++){
+        SetRowCanEdit(table.rows[i]);
+    }
+}
+
+function SetRowCanEdit(row){
+    for(var j=0;j<row.cells.length; j++){
+        //如果当前单元格指定了编辑类型，则表示允许编辑
+        var editType = row.cells[j].getAttribute("EditType");
+        if(!editType){
+            //如果当前单元格没有指定，则查看当前列是否指定
+            editType = row.parentNode.rows[0].cells[j].getAttribute("EditType");
+        }
+        if(editType){
+            row.cells[j].onclick = function (){
+                EditCell(this);
+            }
+        }
+    }
+}
+
+//设置指定单元格可编辑
+function EditCell(element, editType){
+    var editType = element.getAttribute("EditType");
+    if(!editType){
+       //如果当前单元格没有指定，则查看当前列是否指定
+       editType = element.parentNode.parentNode.rows[0].cells[element.cellIndex].getAttribute("EditType");
+    }
+    switch(editType){
+        case "TextBox":
+            CreateTextBox(element, element.innerHTML);
+            break;
+        default:
+            break;
+    }
+}
+
+//为单元格创建可编辑输入框
+function CreateTextBox(element, value){
+    //检查编辑状态，如果已经是编辑状态，跳过
+    var editState = element.getAttribute("EditState");
+    if(editState != "true") {
+        //创建文本框
+        var textBox = document.createElement("INPUT");
+        textBox.type = "text";
+        textBox.className="EditCell_TextBox";
+        textBox.id="EditCell";
+        textBox.name="EditCell";
+        textBox.onkeyup = function () {
+            onkeyuper(this);
+        }
+        //设置文本框当前值
+        if(!value){
+            value = element.getAttribute("Value");
+        }
+        textBox.value = value;
+        //设置文本框的失去焦点事件
+        textBox.onblur = function (){
+            CancelEditCell(this.parentNode, this.value);
+        }
+        //向当前单元格添加文本框
+        ClearChild(element);
+        element.appendChild(textBox);
+        textBox.focus();
+        textBox.select();
+        //改变状态变量
+        element.setAttribute("EditState", "true");
+        element.parentNode.parentNode.setAttribute("CurrentRow", element.parentNode.rowIndex);
+    }
+}
+
+//清空指定对象的所有字节点
+function ClearChild(element){
+    element.innerHTML = "";
+}
+
+//取消单元格编辑状态
+function CancelEditCell(element, value, text){
+    element.setAttribute("Value", value);
+    if(text){
+        element.innerHTML = text;
+    }else {
+        element.innerHTML = value;
+    }
+    element.setAttribute("EditState", "false");
+    rewriteGiftTable();    //当单元格处于非编辑状态时，重新计算所有值并写入对应表格
+}
+
+//重新计算所有值并写入对应表格
+function rewriteGiftTable() {
+    var sum=0
+    var result=0
+    var tableId = document.getElementById("giftTable");
+    var box=document.getElementById("expBox").checked
+    for(var i=1;i<tableId.rows.length-1;i++) {
+        if (tableId.rows[i].cells[1].innerHTML == "") {tableId.rows[i].cells[1].innerHTML=0} ;
+        if (tableId.rows[i].cells[2].innerHTML == "") {tableId.rows[i].cells[2].innerHTML=0} ;
+        result1 = tableId.rows[i].cells[1].innerHTML
+        result2 = tableId.rows[i].cells[2].innerHTML
+        result = result1*result2
+        if(box){
+            tableId.rows[i].cells[3].innerHTML = Math.ceil(result*1.5) ;
+        }else{
+            tableId.rows[i].cells[3].innerHTML = result ;
+        }
+        sum+=parseInt(tableId.rows[i].cells[3].innerHTML)
+    }
+    tableId.rows[i].cells[1].innerHTML = sum ;
+}
+
+//重置表格，因reset无法重置table，reload会刷新页面到首页，故自定义了reset按钮
+function giftReset() {
+    for(var i=0; i<giftArr.length-1; i++){
+        for(var j=0; j<3; j++){
+            document.getElementById("giftTable").rows[i+1].cells[j+1].innerHTML = giftArr[i][j+1] ;
+        }
+    }
+    document.getElementById("giftForm").reset();
+    rewriteGiftTable();
+}
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////     以下为实用计算（涂油提升）部分JS代码       ////////////
+////////////////////////////////////////////////////////////////////////
+
+//为涂油提升部分添加select下拉菜单项(女孩中文名、英文名)
+function addOilSelect() {
+    var obj = document.getElementById('oilGirlSelect');
+    for(var i=0; i<girlAttArr.length; i++) {
+        obj.options.add(new Option(girlAttArr[i][1],girlAttArr[i][0]));
+    }
+    obj.options[0].selected = true;
+}
+
+//计算相应等级提升了多少属性值，返回值为[力量提升,技巧提升,体力提升]的一个数组
+function proAdds(level) {
+    var addtec = 0 , addpow = 0 , addstm = 0
+    var proAddArr = new Array() ;
+    var proAddArrs = new Array() ;
+    proAddArrs[0]=[0,0,0];
+    for(var i=0; i<proAddArr50.length+50 ; i++) {
+        if(i<50) {
+            proAddArr[i] = [12,12,16]
+        } else {
+            proAddArr[i] = proAddArr50[i-50]
+        }
+        proAddArr[0] = [0,0,0];
+        addpow+=proAddArr[i][0];
+        addtec+=proAddArr[i][1];
+        addstm+=proAddArr[i][2];
+        proAddArrs[i+1] = [addpow,addtec,addstm]
+    }
+    return proAddArrs[level]; 
+}
+
+//将计算得到的数值写入相应表格
+function writeOilTable() {
+    var GirlLevel=oilForm.oilGirlLevel.value ;
+    var girlname=oilForm.oilGirlSelect.value ;
+
+    var oilpro1=oilForm.oilSelect1.value ;
+    var oilpro2=oilForm.oilSelect2.value ;
+    var oilpro3=oilForm.oilSelect3.value ;
+    var oilvalue1=oilForm.oilValueSelect1.value ;
+    var oilvalue2=oilForm.oilValueSelect2.value ;
+    var oilvalue3=oilForm.oilValueSelect3.value ;
+    var powadd=0;
+    var tecadd=0;
+    var stmadd=0;
+    
+    if  (GirlLevel=="") { GirlLevel=1 ;}
+    
+    if (oilpro1=='pow') { powadd+=parseInt(oilvalue1) } ;
+    if (oilpro2=='pow') { powadd+=parseInt(oilvalue2) } ;
+    if (oilpro3=='pow') { powadd+=parseInt(oilvalue3) } ;
+    
+    if (oilpro1=='tec') { tecadd+=parseInt(oilvalue1) } ;
+    if (oilpro2=='tec') { tecadd+=parseInt(oilvalue2) } ;
+    if (oilpro3=='tec') { tecadd+=parseInt(oilvalue3) } ;
+    
+    if (oilpro1=='stm') { stmadd+=parseInt(oilvalue1) } ;
+    if (oilpro2=='stm') { stmadd+=parseInt(oilvalue2) } ;
+    if (oilpro3=='stm') { stmadd+=parseInt(oilvalue3) } ;
+
+    oilTable.rows[0].cells[0].innerHTML = girlname + "(Lv" + GirlLevel + ")"    
+    
+    for (i=0; i<girlAttArr.length ; i++) {
+        if (girlAttArr[i][0] == girlname ) {
+            oilTable.rows[1].cells[1].innerHTML = parseInt(girlAttArr[i][2])+parseInt(proAdds(GirlLevel)[0])
+            oilTable.rows[2].cells[1].innerHTML = parseInt(girlAttArr[i][3])+parseInt(proAdds(GirlLevel)[1])
+            oilTable.rows[3].cells[1].innerHTML = parseInt(girlAttArr[i][4])+parseInt(proAdds(GirlLevel)[2])
+        }
+    }
+
+    oilTable.rows[1].cells[2].innerHTML = Math.ceil(parseInt(oilTable.rows[1].cells[1].innerHTML)*(1+parseInt(powadd)/100))
+    oilTable.rows[2].cells[2].innerHTML = Math.ceil(parseInt(oilTable.rows[2].cells[1].innerHTML)*(1+parseInt(tecadd)/100))
+    oilTable.rows[3].cells[2].innerHTML = Math.ceil(parseInt(oilTable.rows[3].cells[1].innerHTML)*(1+parseInt(stmadd)/100))
+}
+
+//reset重置数据
+function oilFormReset() {
+    document.getElementById("oilForm").reset();
+    writeOilTable();
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////     以下为实用计算（代币计算）部分JS代码       ////////////
+////////////////////////////////////////////////////////////////////////
+
+//计算出需要比赛的场数并将结果写入matchNum.
+function writeMatchNum() {
+    currentScore=document.getElementById('currentScore').value ;
+    targetScore=document.getElementById('targetScore').value ;
+    averageScore=document.getElementById('averageScore').value ;
+    if(currentScore && targetScore && averageScore && parseInt(targetScore)>parseInt(currentScore)) {
+        document.getElementById('matchNum').value = Math.ceil((targetScore-currentScore)/averageScore) ;
+    } else {
+        document.getElementById('matchNum').value = "" ;
+    }
+}
+
+//计算消耗的水量
+function writeNeededWater() {
+    matchNum=document.getElementById('matchNum').value;
+    fp2=document.getElementById('fp2').value;
+    averageFP=document.getElementById('averageFP').value;
+    if (matchNum && fp2 && averageFP) {
+        document.getElementById('neededWater').value = Math.ceil(matchNum*averageFP/fp2) ;
+    } else {
+        document.getElementById('neededWater').value = "" ;
+    }
+}
+
+//计算收获多代币
+function writeGetCoin() {
+    matchNum=document.getElementById('matchNum').value;
+    averageCoin=document.getElementById('averageCoin').value;
+    winningRate=document.getElementById('winningRate').value;
+    if (matchNum && averageCoin && winningRate) {
+        document.getElementById('getCoin').value = Math.ceil(matchNum*averageCoin*winningRate/100);
+    } else {
+        document.getElementById('getCoin').value = "" ;
+    }
+}
+
+//计算共提升了多少经验值
+function writeGetExp() {
+    matchNum=document.getElementById('matchNum').value;
+    averageExp=document.getElementById('averageExp').value;
+    winningRate=document.getElementById('winningRate').value;
+    if (matchNum && averageExp && winningRate) {
+        document.getElementById('getExp').value = parseInt(matchNum*averageExp*winningRate/100);
+    } else {
+        document.getElementById('getExp').value = "" ;
+    }
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////     以下为实用计算（几率计算）部分JS代码       ////////////
+////////////////////////////////////////////////////////////////////////
+
+//为几率计算的"卡池人数"项动态生成下拉菜单.
+function addPRcalSelect2() {
+    var obj = document.getElementById('PRcalSelect2');
+    if (document.getElementById('PRcalSelect1').value == "poolSelect2" ) {
+        obj.options.length = 0;
+        obj.options.add(new Option("2人池","2"));
+    } else if (document.getElementById('PRcalSelect1').value == "poolSelect6") {
+        obj.options.length = 0;
+        obj.options.add(new Option("单人池","1"));
+    } else {
+        obj.options.length = 0;
+        for(var i=3; i<=girlAttArr.length; i++) {
+            obj.options.add(new Option(i + "人池",i));
+        }
+    }
+    obj.options[0].selected = true;
+}
+
+//一般池(不包括3步3.3)的概率计算，并将结果写入页面.
+function normalRate(rate) {
+    var succRate=0 , succRate2=0 ;
+    var girlNum = parseInt(document.getElementById('PRcalSelect2').value) ;
+    var tenfoldNum = document.getElementById('tenfoldNum').value ;
+    if (tenfoldNum) {
+        succRate = 1-Math.pow((Math.pow((1-rate),10)), tenfoldNum);
+        document.getElementById('SuccessRate1').value = succRate ;
+        if (girlNum) {
+            succRate2 = 1-Math.pow((Math.pow((1-rate/girlNum),10)), tenfoldNum);
+            document.getElementById('SuccessRate2').value = succRate2 ;
+        } else {document.getElementById('SuccessRate2').value = "" ;}
+    }else{
+        document.getElementById('SuccessRate1').value = "" ;
+    }
+}
+
+//计算SR出货率(即战术出货率)
+function srRate() {
+    var srNum = document.getElementById('srNum').value ;
+    var tenfoldNum = document.getElementById('tenfoldNum').value ;
+    if (tenfoldNum && srNum) {
+        srSuccRate = 1-Math.pow((Math.pow((1-0.1/srNum),9))*(1-0.989/srNum), tenfoldNum);
+        document.getElementById('SuccessRate3').value = srSuccRate ;
+    } else {document.getElementById('SuccessRate3').value = ""};
+}
+
+//3步3.3池的出货率计算
+function poolSelectRate3() {
+    var girlNum = parseInt(document.getElementById('PRcalSelect2').value) ;
+    var tenfoldNum = document.getElementById('tenfoldNum').value ;
+    var roundNum1=parseInt(tenfoldNum/3) ;
+    var roundNum2=parseInt(tenfoldNum%3) ;
+    if (tenfoldNum) {
+        oneRoundFailRate = Math.pow(Math.pow((1-0.011),10),2)*Math.pow((1-0.033),10) ;
+        succRate = 1-Math.pow(oneRoundFailRate,roundNum1)*Math.pow(Math.pow((1-0.011),10),roundNum2) ;
+        document.getElementById('SuccessRate1').value = succRate ;
+        if (girlNum) {
+            oneRoundFailRate2 = Math.pow((Math.pow((1-0.011/girlNum),10)),2)*Math.pow((1-0.033/girlNum),10) ;
+            succRate2 = 1-Math.pow(oneRoundFailRate2,roundNum1)*Math.pow(Math.pow((1-0.011/girlNum),10),roundNum2) ;
+            document.getElementById('SuccessRate2').value = succRate2 ;
+        } else {document.getElementById('SuccessRate2').value = "" ;}
+    }else{
+        document.getElementById('SuccessRate1').value = "" ;
+    }
+}
+
+//几率计算的核心函数，输入框每变动一次函数执行一次
+function PRcalculation() {
+    var succRate=0 , succRate2=0 ;
+    var PRcalSelect1 = document.getElementById('PRcalSelect1').value ;
+    var stoneNum = parseInt(document.getElementById('stoneNum').value) ;
+    var tenfoldNum = parseInt(stoneNum/5000) ;
+    roundNum1 = parseInt(tenfoldNum/3) ;
+    roundNum2 = tenfoldNum%3 ;
+    if (PRcalSelect1 == "poolSelect4") { tenfoldNum = parseInt(tenfoldNum/3) + tenfoldNum } ;
+    document.getElementById('tenfoldNum').value = tenfoldNum ;
+    document.querySelector('#round1').style.display="none";
+    document.querySelector('#round2').style.display="none";
+    document.querySelector('#br').style.display="block";
+    document.querySelector('#br2').style.display="none";
+    document.querySelector('#sr2').style.display="none";
+    document.querySelector('#ssr2').style.display="block";
+    switch (PRcalSelect1) {
+        case "poolSelect1" :
+            document.querySelector('#sr1').style.display="none";
+            normalRate(0.011);
+            break;
+        case "poolSelect2" :
+            document.querySelector('#sr1').style.display="none";
+            normalRate(0.0078);
+            break;
+        case "poolSelect3" :
+            document.querySelector('#sr1').style.display="none";
+            document.querySelector('#round1').style.display="block";
+            document.querySelector('#round2').style.display="block";
+            document.querySelector('#br').style.display="none";
+            document.getElementById('roundNum1').value = roundNum1 ;
+            document.getElementById('roundNum2').value = roundNum2 ;
+            poolSelectRate3();
+            break;
+        case "poolSelect4" :
+            document.querySelector('#sr1').style.display="none";
+            document.querySelector('#round1').style.display="block";
+            document.querySelector('#round2').style.display="block";
+            document.querySelector('#br').style.display="none";
+            document.getElementById('roundNum1').value = roundNum1 ;
+            document.getElementById('roundNum2').value = roundNum2 ;
+            normalRate(0.011);
+            break;
+        case "poolSelect5" :
+            document.querySelector('#sr1').style.display="none";
+            normalRate(0.033);
+            break;
+        case "poolSelect6" :
+            document.querySelector('#sr1').style.display="block";
+            document.querySelector('#sr2').style.display="block";
+            document.querySelector('#ssr2').style.display="none";
+            document.querySelector('#br').style.display="none";
+            document.querySelector('#br2').style.display="block";
+            normalRate(0.0078);
+            srRate();
+            break;
+        default:
+            break;
+    }
+    if (!stoneNum) {
+        document.getElementById('roundNum1').value = "" ;
+        document.getElementById('roundNum2').value = "" ;
+        document.getElementById('tenfoldNum').value = "" ;
+        document.getElementById('SuccessRate1').value = "" ;
+        document.getElementById('SuccessRate2').value = "" ;
+    }
+}
+
+//重置几率计算模块的数据和格式
+function PRcalReset() { 
+    document.getElementById("PRcalForm").reset(); 
+    addPRcalSelect2();
+    PRcalculation();
+}
+
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////            以下为其它数据部分JS代码            ////////////
+////////////////////////////////////////////////////////////////////////
+
+//核心函数，四个参数分别是“对RADIO的描述”，“表上方文字”，“表的内容数组”，“备注内容”。
+function addOtherData(radioText,TEXT,arrName,remark) {
+    var SN = document.querySelector('#otherDataP').querySelectorAll('font').length ;
+    var basicName = 'otherData' + SN ;
+    createOtherDataInput(basicName,radioText);
+    createOtherDataDiv(basicName);
+    if (TEXT) {createOtherDateText(basicName,TEXT);}
+    if (arrName) {createOtherDataTab(basicName,arrName);}
+    if (remark) {createOtherDateRemark(basicName,remark);}
+    changeFontColor();
+}
+
+//在otherDataP标签中创建一个radio和一个font标签
+function createOtherDataInput(basicName,radioText) {
+    var input = document.createElement('input');
+    input.type = "radio";
+    input.name = "otherDataRadio";
+    input.value = basicName;
+    input.id = (basicName + 'Radio');
+    input.onclick = function(){onclickRadio(basicName + 'Radio') }
+    otherDataP.appendChild(input);
+    var font = document.createElement('font');
+    font.innerHTML = radioText + '&nbsp;';
+    font.id = basicName ;
+    if (basicName == 'otherData1') {document.getElementById(basicName + 'Radio').checked = 'true'}
+    otherDataP.appendChild(font);
+}
+
+//在otherDataDiv中创建一个新的div
+function createOtherDataDiv(basicName) {
+    var div = document.createElement('div');
+    div.id = basicName + 'Div';
+    if (basicName == 'otherData1') {
+        div.style.cssText = "display:block; text-align:center;"
+    } else {
+        div.style.cssText = "display:none; text-align:center;";
+    }
+    otherDataDiv.appendChild(div);
+}
+
+//在新建的div中创建一个表
+function createOtherDataTab(basicName,arrName) {
+    var div = document.getElementById(basicName + 'Div') ;
+    var tab = document.createElement('table');
+    tab.className = 'altrowstable' ; 
+    tab.id = basicName + 'Table' ;
+    div.appendChild(tab);
+    for (var i = 0; i < arrName.length; i++) {
+        //创建行
+        trs = document.createElement('tr');
+        var tbody = document.querySelector('#' + basicName + 'Table');
+        tbody.appendChild(trs);
+        for(var k in arrName[i]) {
+            //创建单元格
+            var td=document.createElement('td');
+            //把对象里面的属性值 给td
+            td.innerHTML=arrName[i][k];
+            trs.appendChild(td);
+        }
+    }
+}
+
+//在新建的div中创建一个p标签用来录入文字（文字位于表的上方）
+function createOtherDateText(basicName,TEXT) {
+    var div = document.getElementById(basicName + 'Div') ;
+    var p = document.createElement('p');
+    p.id = basicName + 'TextP';
+    p.style.cssText = "text-align:left;";
+    if (TEXT) {p.innerHTML = TEXT;}
+    div.appendChild(p);
+}
+
+//在新建的div中创建一个p标签用来录入备注（备注位于表的下方）
+function createOtherDateRemark(basicName,remark) {
+    var div = document.getElementById(basicName + 'Div') ;
+    var p = document.createElement('p');
+    p.id = basicName + 'RemarkP';
+    p.style.cssText = "text-align:left; color:#696969;";
+    if (remark) {p.innerHTML = remark;}
+    div.appendChild(p);
+}
+
+//逐个更改radio描述性文字的颜色
+function changeFontColor() {
+    var colorArr = [ '#000000', '#c70000', '#fc870d', '#824200', '#ff00ff', '#0000ff', '#6aa84f', '#DEB887', '#FFD700', '#008080' ]
+    radios = document.querySelector('#otherDataP').querySelectorAll('font')
+    for(var i = 0; i < radios.length; i++ ) {
+        radios[i].color = colorArr[i];
+    }
+}
+
+//重新定义文字的大小，三种用法。例：resizeFont(15,'table')仅将表格内文字大小指定为15px; resizeFont(15,'text')仅将表格之外的文字大小指定为15px; resizeFont(15)将所有文字都指定为15px.
+function resizeFont(size,obj) {
+    var SN = document.querySelector('#otherDataP').querySelectorAll('input').length;
+    if (document.getElementById('otherData' + SN + 'Table') && obj != "text") {document.getElementById('otherData' + SN + 'Table').style.fontSize = size + 'px'}
+    if (document.getElementById('otherData' + SN + 'Div') && obj != "table") {document.getElementById('otherData' + SN + 'Div').style.fontSize = size + 'px'}
+}
+
+//设置粗体字，用法：tableFontWeight()将首行设置成粗体; tableFontWeight(i)将整个第i行设置成粗体; tableFontWeight('',j)将整个第j列设置成粗体; tableFontWeight(i,j)将第i行，第j列的单个表格设置成粗体
+function tableFontWeight(i,j) {
+    if(i === 0) {i = '0'}
+    if(j === 0) {j = '0'}
+    if(!i) {i = ''}
+    if(!j) {j = ''}
+    var SN = document.querySelector('#otherDataP').querySelectorAll('input').length;
+    var tb = document.getElementById('otherData' + SN + 'Table');
+    if (i == ''){
+        if (j == '') {tb.rows[0].style.fontWeight="bolder";} else {
+            for (var k = 0; k < tb.rows.length; k++) {
+               if (tb.rows[k].cells[j]) { tb.rows[k].cells[j].style.fontWeight="bolder"; }
+            }
+        }
+    } else{
+        if (j == '') {tb.rows[i].style.fontWeight="bolder";} else {
+            if (tb.rows[i].cells[j]) { tb.rows[i].cells[j].style.fontWeight="bolder"; }
+        }
+    }
+}
+
+//将i行j列向右扩展k个单元格
+function tableColSpan(i,j,k) {
+    var SN = document.querySelector('#otherDataP').querySelectorAll('input').length;
+    var tb = document.getElementById('otherData' + SN + 'Table');
+    tb.rows[i].cells[j].colSpan = (tb.rows[i].cells[j].colSpan) + k
+}
+
+//将i行j列向下扩展k个单元格
+function tableRowSpan(i,j,k) {
+    var SN = document.querySelector('#otherDataP').querySelectorAll('input').length;
+    var tb = document.getElementById('otherData' + SN + 'Table');
+    tb.rows[i].cells[j].rowSpan = (tb.rows[i].cells[j].rowSpan) + k
+}
+
+
+</script>
+
+
+
+
+<!----------------------------------------------------------------------
+////////////////////////////////////////////////////////////////////////
+////////////                 以下为HTML代码                 ////////////
+////////////////////////////////////////////////////////////////////////
+----------------------------------------------------------------------->
+
+<fieldset id="fieldid" style="height:100%; width:95.5%;">
+
+<legend id="buttons" align="center" style="font-family: STXingkai; font-size: 13px;">
+    <input class="buttonClass" id="firstButton" type="button" name="firstButton" value="程序首页"  onClick="onclickButton('firstButton')"></button>
+    <input class="buttonClass" id="propertyButton" type="button" name="propertyButton" value="女孩属性"  onClick="onclickButton('propertyButton')"></button>
+    <input class="buttonClass" id="resourceButton" type="button" name="resourceButton" value="主要耗材" onClick="onclickButton('resourceButton')"></button>
+    <input class="buttonClass" id="probabilityButton" type="button" name="probabilityButton" value="几率概览" onClick="onclickButton('probabilityButton')"></button>
+    <input class="buttonClass" id="campaignButton" type="button" name="campaignButton" value="往期活动" onClick="onclickButton('campaignButton')"></button>
+    <input class="buttonClass" id="calculationButton" type="button" name="calculationButton" value="实用计算" onClick="onclickButton('calculationButton')"></button>
+    <input class="buttonClass" id="otherDataButton" type="button" name="otherDataButton" value="其它数据" onClick="onclickButton('otherDataButton')"></button>
+</legend>
+
+<td valign="top" ><font color="#333333">
+
+<div id="firstDiv" style="display:block; font-size:16px; color:#000000; opacity:0.8; background-image: url(https://i0.hdslb.com/bfs/article/32e81ca947603eae0aa0270770ac2cc566db3fd8.jpg); background-size:485px,500px;" >
+<br>
+<span><a id='checkVersion' style='text-decoration:none;color:white;font-size:18px' title='已是最新版本！'>&nbsp;&nbsp;<b>&#x2709;!</b></a></span>
+<pre>
+                                            <font color='DarkOrchid'>+------</font><b><a onclick="onclickButton('propertyButton'); onclickRadio('powRadio')">&hearts;力量女孩</a></b>
+                       +------女孩属性------<font color='DarkOrchid'>+------</font><b><a onclick="onclickButton('propertyButton'); onclickRadio('tecRadio')">&hearts;技巧女孩</a></b>
+                       |                    <font color='DarkOrchid'>+------</font><b><a onclick="onclickButton('propertyButton'); onclickRadio('stmRadio')">&hearts;体力女孩</a></b>
+                       |                    <font color='green'>+------</font><b><a onclick="onclickButton('resourceButton'); onclickRadio('wingRadio')">&diams;饰品</a></b>
+                       |                    <font color='green'>+------</font><b><a onclick="onclickButton('resourceButton'); onclickRadio('keyRadio')">&diams;钥匙</a></b>
+                       +------主要耗材------<font color='green'>+------</font><b><a onclick="onclickButton('resourceButton'); onclickRadio('basketRadio')">&diams;篮子</a></b>
+                       |                    <font color='green'>+------</font><b><a onclick="onclickButton('resourceButton'); onclickRadio('plateRadio')">&diams;卡片</a></b>
+                       |                    <font color='green'>+------</font><b><a onclick="onclickButton('resourceButton'); onclickRadio('otherRadio')">&diams;其它</a></b>                    
+                       |                    <font color='blue'>+------</font><b><a onclick="onclickButton('probabilityButton'); onclickRadio('rateRadio1')">&clubs;1.1多人池</a></b>
+                       |                    <font color='blue'>+------</font><b><a onclick="onclickButton('probabilityButton'); onclickRadio('rateRadio2')">&clubs;1.1双人池</a></b>
+             首页------+------几率概览------<font color='blue'>+------</font><b><a onclick="onclickButton('probabilityButton'); onclickRadio('rateRadio3')">&clubs;3步3.3池</a></b>
+                       |                    <font color='blue'>+------</font><b><a onclick="onclickButton('probabilityButton'); onclickRadio('rateRadio4')">&clubs;3步送1池</a></b>
+                       |                    <font color='blue'>+------</font><b><a onclick="onclickButton('probabilityButton'); onclickRadio('rateRadio5')">&clubs;3.3多人池</a></b>
+                       +------往期活动------<font color='Purple'>+------</font><b><a onclick="onclickButton('campaignButton');">&#x263B;往期活动查询</a></b>
+                       |                    <font color='NavajoWhite'>+------</font><b><a onclick="onclickButton('calculationButton'); onclickRadio('matchRadio')">&spades;女孩升级计算</a></b>
+                       |                    <font color='NavajoWhite'>+------</font><b><a onclick="onclickButton('calculationButton'); onclickRadio('giftRadio')">&spades;礼物经验计算</a></b>
+                       +------实用计算------<font color='NavajoWhite'>+------</font><b><a onclick="onclickButton('calculationButton'); onclickRadio('oilRadio')">&spades;涂油提升计算</a></b>
+                       |                    <font color='NavajoWhite'>+------</font><b><a onclick="onclickButton('calculationButton'); onclickRadio('coinRadio')">&spades;活动币计算</a></b>
+                       |                    <font color='NavajoWhite'>+------</font><b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">&spades;概率计算</a></b>
+                       +------其它数据------<font color='HotPink'>+------</font><b><a onclick="onclickButton('otherDataButton');">&#x2762;其它数据</a></b>
+</pre>
+<p style="text-align:center;">
+    <input id=cancelButton class="buttonClass" type="button" value="退出" name="cancelButton" onClick="CancelScript()">&nbsp;
+    <input id=helpButton class="buttonClass" type="button" value="帮助" name="helpButton" onClick="HelpScript()">
+</p>
+<br>
+</div>
+
+
+
+
+<div id="propertyDiv" style="display:none; text-align:center;" >
+    <form id="propertyForm" method="post"><p>
+        <font color="#000000"><b>属性</b>：</font>
+        <input type="radio" name="propertyRadio" value="powgirl" id="powRadio" checked onclick="onclickRadio('powRadio')"><font color="#ff0000">力量女孩</font>
+        <input type="radio" name="propertyRadio" value="tecgirl" id="tecRadio" onclick="onclickRadio('tecRadio')"><font color="#6aa84f">技巧女孩</font>
+        <input type="radio" name="propertyRadio" value="stmgirl" id="stmRadio" onclick="onclickRadio('stmRadio')"><font color="#ff9900">体力女孩</font>
+    </p></form>
+    
+    <div id="powDiv" style="display:block; text-align:center;">
+    <p><table cellspacing="0" id="powTable" style="font-size:12px">
+        <tr>
+            <th>#</th><th colspan=9>力量女孩</th>
+        </tr>
+        <tr>
+            <th>女孩</th><th>等级</th><th>力量</th><th>技巧</th><th>体力</th><th>魅力</th><th>SSR头饰</th><th>SSR面饰</th><th>SSR手饰</th><th>生日</th>
+        </tr>
+        <tbody id="pow">
+        </tbody>
+    </table></p>
+    <script type="text/javascript">
+        createGirlAttTab('pow');
+        var powRows=document.getElementById("powTable").rows.length
+        brNum=(13-powRows)*2
+        if (brNum>0) { for(i=0; i<brNum; i++) {document.write("<br>")} } ;
+    </script>
+    </div>
+    
+    <div id="tecDiv" style="display:none; text-align:center;">
+    <p><table id="tecTable" style="font-size:12px">
+        <tr>
+            <th>#</th><th colspan=9>技巧女孩</th>
+        </tr>
+        <tr>
+            <th>女孩</th><th>等级</th><th>力量</th><th>技巧</th><th>体力</th><th>魅力</th><th>SSR头饰</th><th>SSR面饰</th><th>SSR手饰</th><th>生日</th>
+        </tr>
+        <tbody id="tec">
+        </tbody>    
+    </table></p>
+    <script type="text/javascript">
+        createGirlAttTab('tec');
+        var tecRows=document.getElementById("tecTable").rows.length
+        brNum=(13-tecRows)*2
+        if (brNum>0) { for(i=0; i<brNum; i++) {document.write("<br>")} } ;
+    </script>
+    </div>
+
+    <div id="stmDiv" style="display:none; text-align:center;">
+    <p><table id="stmTable" style="font-size:12px">
+        <tr>
+            <th>#</th><th colspan=9>体力女孩</th>
+        </tr>
+        <tr>
+            <th>女孩</th><th>等级</th><th>力量</th><th>技巧</th><th>体力</th><th>魅力</th><th>SSR头饰</th><th>SSR面饰</th><th>SSR手饰</th><th>生日</th>
+        </tr>
+        <tbody id="stm">
+        </tbody>
+    </table></p>
+    <script type="text/javascript">
+        createGirlAttTab('stm');
+        var stmRows=document.getElementById("stmTable").rows.length
+        brNum=(13-stmRows)*2
+        if (brNum>0) { for(i=0; i<brNum; i++) {document.write("<br>")} } ;
+    </script>
+    </div>
+</div>
+
+
+
+<div id="resourceDiv" style="display:none; text-align:center;">
+
+    <form id="resourceForm" method="post"><p>
+    请选择：<input type="radio" name="resource" value="wing" id="wingRadio" checked onClick="onclickRadio('wingRadio')"><font color="#c70000">饰品</font>
+           <input type="radio" name="resource" value="key" id="keyRadio" onClick="onclickRadio('keyRadio')"><font color="#fc870d">钥匙</font>
+           <input type="radio" name="resource" value="basket" id="basketRadio" onClick="onclickRadio('basketRadio')"><font color="#824200">篮子</font>
+           <input type="radio" name="resource" value="plate" id="plateRadio" onClick="onclickRadio('plateRadio')"><font color="#ff00ff">声援板</font>
+           <input type="radio" name="resource" value="other" id="otherRadio" onClick="onclickRadio('otherRadio')"><font color="#0000ff">其它</font>
+    </p></form>
+    
+    <div id="wingDiv" style="display:block; text-align:center; font-size:16px;">
+    <form>
+    <br>
+    <table id="wingTable" class="altrowstable">
+        <tr>
+            <th>#</th><th colspan=5>SSR</th><th colspan=7>SR</th>
+        </tr>
+        <tr>
+            <th>等级</th><th>值</th><th>提升</th><th>羽毛</th><th>单翅</th><th>双翅</th><th colspan=3>值</th><th>提升</th><th>羽毛</th><th>单翅</th><th>双翅</th>
+        </tr>
+        <tr>
+            <td><b>1</b></td><td>200</td><td>+0</td><td>0</td><td>0</td><td>0</td><td>100</td><td>120</td><td>150</td><td>+0</td><td>0</td><td>0</td><td>0</td>
+        </tr>
+        <tr>
+            <td><b>30</b></td><td>278</td><td>+78</td><td>0</td><td>0</td><td>0</td><td>158</td><td>178</td><td>208</td><td>+58</td><td>0</td><td>0</td><td>0</td>
+        </tr>
+        </tr>
+        <tr>
+            <td><b>40</b></td><td>309</td><td>+31</td><td>10</td><td>0</td><td>0</td><td>179</td><td>199</td><td>229</td><td>+21</td><td>5</td><td>0</td><td>0</td>
+        </tr>
+        <tr>
+            <td><b>50</b></td><td>342</td><td>+33</td><td>20</td><td>10</td><td>0</td><td>201</td><td>221</td><td>251</td><td>+22</td><td>10</td><td>5</td><td>0</td>
+        </tr>
+        <tr>
+            <td><b>60</b></td><td>380</td><td>+38</td><td>20</td><td>10</td><td>1</td><td>224</td><td>244</td><td>274</td><td>+23</td><td>15</td><td>10</td><td>1</td>
+        </tr>
+        <tr>
+            <td><b>70</b></td><td>424</td><td>+44</td><td>30</td><td>15</td><td>2</td><td>250</td><td>270</td><td>300</td><td>+26</td><td>20</td><td>10</td><td>3</td>
+        </tr>
+        <tr>
+            <td><b>80</b></td><td>480</td><td>+56</td><td>30</td><td>15</td><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td><b>90</b></td><td>600</td><td>+120</td><td>40</td><td>20</td><td>8</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+            <td><b>统计</b></td><td>#</td><td>+600</td><td>150</td><td>70</td><td>15</td><td>#</td><td>#</td><td>#</td><td>+300</td><td>50</td><td>25</td><td>4</td>
+        </tr>
+    </table>
+    <br><br><br><br>
+    </form>
+    </div>
+    
+    <div id="keyDiv" style="display:none; text-align:center;">
+    <table class="altrowstable" id="keyTable" style="font-size:11px">
+        <tr>
+            <th>&#x2605;级</th><th>&#x2605;1</th><th>&#x2605;2</th><th>&#x2605;3</th><th>&#x2605;4</th><th>&#x2605;5</th><th>&#x2605;6</th><th>&#x2605;7</th><th>&uarr;/pp</th>
+        </tr>
+        <tr>
+            <td>5PP原钻<br>+1%</td><td>2%<br>1000pt</td><td>3%<br>2000pt</td><td>4%<br>4000pt</td><td>5%<br>6000pt</td><td>6%<br>10000pt</td><td></td><td></td><td>1.20%</td>
+        </tr>
+        <tr>
+            <td>4PP<br>+5%</td><td>6%-4k<br>2000pt</td><td>7%-4k<br>3000pt</td><td></td><td></td><td></td><td></td><td></td><td>1.75%</td>
+        </tr>
+        </tr>
+        <tr>
+            <td>5PP<br>+1%</td><td>2%-1k<br>5000pt</td><td>3%-1k<br>5000pt</td><td>5%-2k<br>10000pt</td><td>8%-4k<br>20000pt</td><td></td><td></td><td></td><td>1.60%</td>
+        </tr>
+        <tr>
+            <td>5PP<br>+6%</td><td>7%-4k<br>20000pt</td><td>9%-4k<br>30000pt</td><td></td><td></td><td></td><td></td><td></td><td>1.80%</td>
+        </tr>
+        <tr>
+            <td>7PP<br>+5%</td><td>6%-1k<br>5000pt</td><td>7%-1k<br>10000pt</td><td>9%-2k<br>20000pt</td><td>11%-2k<br>20000pt</td><td>13%-2k<br>20000pt</td><td></td><td></td><td>1.86%</td>
+        </tr>
+        <tr>
+            <td>8PP<br>+2%</td><td>3%<br>5000pt</td><td>4%-1k<br>5000pt</td><td>5%-1k<br>10000pt</td><td>6%-1k<br>10000pt</td><td>8%-1k<br>10000pt</td><td>11%-2k<br>20000pt</td><td>14%-2k<br>20000pt</td><td>1.75%</td>
+        </tr>
+        <tr>
+            <td>8PP<br>+5%</td><td>6%-1k<br>5000pt</td><td>7%-1k<br>10000pt</td><td>9%-2k<br>20000pt</td><td>11%-2k<br>20000pt</td><td>13%-2k<br>20000pt</td><td></td><td></td><td>1.86%</td>
+        </tr>
+        <tr>
+            <td>12PP<br>+10(11)%</td><td>11(12)%<br>5000pt</td><td>12(13)%-1k<br>10000pt</td><td>14%-1k<br>10000pt</td><td>16%-1k<br>10000pt</td><td>18%-1k<br>10000pt</td><td>21%-2k<br>20000pt</td><td>24%-2k<br>20000pt</td><td>2.00%</td>
+        </tr>
+        <tr>
+            <td>13PP<br>+11%</td><td>13%<br>5000pt</td><td>15%-1k<br>10000pt</td><td>17%-1k<br>10000pt</td><td>19%-1k<br>10000pt</td><td>21%-1k<br>10000pt</td><td>24%-2k<br>20000pt</td><td>27%-2k<br>20000pt</td><td>2.08%</td>
+        </tr>
+    </table>
+    </div>
+
+    <div id="basketDiv" style="display:none; text-align:center;">
+    <table class="altrowstable" id="basketTable" style="font-size:10px">
+        <tr>
+            <td><b>等级</b></td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>0</td><td>8</td><td>18</td><td>28</td><td>38</td><td>58</td><td>78</td><td>98</td><td>128</td><td>168</td><td>0.43</td>
+        </tr>
+        </tr>
+        <tr>
+            <td><b>等级</b></td><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td><td>20</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>218</td><td>268</td><td>318</td><td>388</td><td>468</td><td>558</td><td>998</td><td>1158</td><td>1398</td><td>1668</td><td>5.11</td>
+        </tr>
+        <tr>
+            <td><b>等级</b></td><td>21</td><td>22</td><td>23</td><td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>1958</td><td>2338</td><td>2788</td><td>3328</td><td>3898</td><td>4588</td><td>5338</td><td>6168</td><td>7058</td><td>8008</td><td>31.21</td>
+        </tr>
+        <tr>
+            <td><b>等级</b></td><td>31</td><td>32</td><td>33</td><td>34</td><td>35</td><td>36</td><td>37</td><td>38</td><td>39</td><td>40</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>9078</td><td>9838</td><td>10638</td><td>11478</td><td>12048</td><td>13328</td><td>14308</td><td>15388</td><td>16498</td><td>17758</td><td>89.47</td>
+        </tr>
+        <tr>
+            <td><b>等级</b></td><td>41</td><td>42</td><td>43</td><td>44</td><td>45</td><td>46</td><td>47</td><td>48</td><td>49</td><td>50</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>18858</td><td>20038</td><td>20098</td><td>20148</td><td>20188</td><td>20458</td><td>20768</td><td>20468</td><td>20523</td><td>20728</td><td>138.83</td>
+        </tr>
+        <tr>
+            <td><b>等级</b></td><td>51</td><td>52</td><td>53</td><td>54</td><td>55</td><td>56</td><td>57</td><td>58</td><td>59</td><td>60</td><td>需篮子</td>
+        </tr>
+        <tr>
+            <td><b>经验值</b></td><td>20728</td><td>20728</td><td>21328</td><td>21328</td><td>22768</td><td>22748</td><td>23288</td><td>23978</td><td>24118</td><td>24808</td><td>155</td>
+        </tr>
+        <tr>    
+            <td><b>统计</b></td><td colspan=10>注意：两女孩亲密度在40/49/54/59时分别需要1/1/2/3把钥匙来解锁亲密度上限！</td><td><b>420</b></td>
+        </tr> 
+    </table>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;(<b>注</b>：升级到60亲密度需要的总经验为611987，共计需要420个篮子为期望值，如所有工作全部为成功最高需要篮子510个，所有工作全部为超成功最低需要篮子272个。)</p>
+    </div>
+
+    <div id="plateDiv" style="display:none; text-align:center;">
+    <br>
+    <table class="altrowstable" id="plateTable" style="font-size:11px">
+        <tr>
+            <th>卡片</th><th>分类</th><th>单卡经验</th><th>LV1</th><th>LV2</th><th>LV3</th><th>LV4</th><th>LV5</th><th>总和</th>
+        </tr>
+        <tr>
+            <td rowspan=4><b>SSR<br>↓<br>SSR+</b></td><td>经验值</td><td>#</td><td>0</td><td>672000</td><td>672000</td><td>672000</td><td>672000</td><td>2688000</td>
+        </tr>
+        <tr>
+            <td>相同SSR</td><td>672000</td><td>0</td><td>1</td><td>1</td><td>1</td><td>1</td><td>4</td>
+        </tr>
+        <tr>
+            <td>同属性SSR</td><td>201600</td><td>0</td><td>3.33</td><td>3.33</td><td>3.33</td><td>3.33</td><td>13.33</td>
+        </tr>
+        <tr>
+            <td>异属性SSR</td><td>134600</td><td>0</td><td>5</td><td>5</td><td>5</td><td>5</td><td>20</td>
+        </tr>
+        <tr>
+            <td rowspan=4><b>SR<br>↓<br>SSR</b></td><td>经验值</td><td>#</td><td>0</td><td>224000</td><td>224000</td><td>224000</td><td>224000</td><td>896000</td>
+        </tr>
+        <tr>
+            <td>相同SR(蜡笔)</td><td>44800</td><td>0</td><td>5</td><td>5</td><td>5</td><td>5</td><td>20</td>
+        </tr>
+        <tr>
+            <td>同属性SR</td><td>13400</td><td>0</td><td>16.67</td><td>16.67</td><td>16.67</td><td>16.67</td><td>66.67</td>
+        </tr>
+        <tr>
+            <td>异属性SR</td><td>134600</td><td>0</td><td>25</td><td>25</td><td>25</td><td>25</td><td>100</td>
+        </tr>
+        <tr>
+            <td rowspan=4><b>R<br>↓<br>SR</b></td><td>经验值</td><td>#</td><td>0</td><td>12800</td><td>12800</td><td>12800</td><td>12800</td><td>51200</td>
+        </tr>
+        <tr>
+            <td>相同R</td><td>1600</td><td>0</td><td>8</td><td>8</td><td>8</td><td>8</td><td>32</td>
+        </tr>
+        <tr>
+            <td>同属性R</td><td>480</td><td>0</td><td>26.67</td><td>26.67</td><td>26.67</td><td>26.67</td><td>106.667</td>
+        </tr>
+        <tr>
+            <td>异属性R</td><td>320</td><td>0</td><td>40</td><td>40</td><td>40</td><td>40</td><td>160</td>
+        </tr>
+    </table>
+    <br>
+    </div>
+    
+    <div id="otherDiv" style="display:none; ">
+    <br>
+    <table class="altrowstable" id="otherTable" style="text-align:left; font-size:11.5px;">
+        <tr>
+            <th>物品</th><th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;描述 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+        </tr>
+        <tr>
+            <td>柔嫩凝胶/硬化凝胶</td><td>使女孩胸部晃动增加/减少</td>
+        </tr>
+        <tr>
+            <td>柔嫩乳液/硬化乳液</td><td>使女孩胸部变的酥软/坚挺</td>
+        </tr>
+        <tr>
+            <td>柔嫩精油/硬化精油</td><td>使女孩臀腿晃动增加/减少</td>
+        </tr>
+        <tr>
+            <td>柔嫩精华夜/硬化精华液</td><td>使女孩臀腿变的柔软/坚硬</td>
+        </tr>
+        <tr>
+            <td>房间钥匙</td><td>两女孩亲密度为40 49 54 59时，分别需要1，1，2，3把钥匙来解锁亲密度上限</td>
+        </tr>
+        <tr>
+            <td>VIP币</td><td>每分解1件SSR衣服可得10枚，50枚可购买1颗觉醒石；也可购买家具和黑油等</td>
+        </tr>
+        <tr>
+            <td>觉醒石</td><td>用来觉醒衣服技能，每件衣服最高觉醒四次(即满破衣服需要四枚觉醒石)</td>
+        </tr>
+        <tr>
+            <td>强化石</td><td>主要通过打西瓜获得，用来提升衣服等级</td>
+        </tr>
+        <tr>
+            <td>解锁石</td><td>主要通过打西瓜获得，用来解锁衣服等级上限(最高90级)</td>
+        </tr>
+        <tr>
+            <td>羽毛/单翅/双翅</td><td>用来解锁饰品等级上限，详见<a onclick="onclickRadio('wingRadio')">饰品</a>项</td>
+        </tr>
+        <tr>
+            <td>毛线团/线圈等</td><td>用来提升饰品等级，可有可无，一般用强化石强化满级R衣服然后强化饰品</td>
+        </tr>
+        <tr>
+            <td>VIP点数</td><td>分解N/R衣服可得。可每天换一瓶水，每周换些普通食物</td>
+        </tr>
+    </table>
+    <br>
+    </div>
+
+</div>
+
+
+<div id="probabilityDiv" style="display:none; text-align:center;">
+
+    <form id="probabilityForm" method="post"><p>
+    请选择：<input type="radio" name="probability" value="1" id="rateRadio1" checked onClick="onclickRadio('rateRadio1')"><font color="#c70000">1.1多人池</font>
+           <input type="radio" name="probability" value="2" id="rateRadio2" onClick="onclickRadio('rateRadio2')"><font color="#fc870d">1.1双人池</font>
+           <input type="radio" name="probability" value="3" id="rateRadio3" onClick="onclickRadio('rateRadio3')"><font color="#824200">3步3.3池</font>
+           <input type="radio" name="probability" value="4" id="rateRadio4" onClick="onclickRadio('rateRadio4')"><font color="#ff00ff">3步送1池</font>
+           <input type="radio" name="probability" value="5" id="rateRadio5" onClick="onclickRadio('rateRadio5')"><font color="#0000ff">3.3多人池</font>
+    </p></form>
+    
+    <div id="rateDiv1" style="display:block; text-align:center; font-size:14px;">
+    <form>
+
+    <table class="altrowstable" id="rateTable1">
+        <tr><th>钻石量(万)</th><th>3</th><th>4.5</th><th>6</th><th>7.5</th><th>9</th><th>10.5</th><th>12</th><th>15</th><th>18</th><th>21</th><th>30</th></tr>
+        <tr><th>出货率</th><td>48.5</td><td>63.05</td><td>73.48</td><td>80.97</td><td>86.34</td><td>90.2</td><td>92.97</td><td>96.38</td><td>98.14</td><td>99.04</td><td>99.87</td></tr>
+        <tr>	<td>	3人池	</td><td>	19.78	</td><td>	28.15	</td><td>	35.65	</td><td>	42.36	</td><td>	48.38	</td><td>	53.76	</td><td>	58.59	</td><td>	66.78	</td><td>	73.35	</td><td>	78.62	</td><td>	88.96	</td>	</tr>
+        <tr>	<td>	4人池	</td><td>	15.23	</td><td>	21.95	</td><td>	28.14	</td><td>	33.84	</td><td>	39.08	</td><td>	43.91	</td><td>	48.36	</td><td>	56.23	</td><td>	62.89	</td><td>	68.54	</td><td>	80.84	</td>	</tr>
+        <tr>	<td>	5人池	</td><td>	12.38	</td><td>	17.98	</td><td>	23.22	</td><td>	28.13	</td><td>	32.73	</td><td>	37.03	</td><td>	41.06	</td><td>	48.35	</td><td>	54.75	</td><td>	60.35	</td><td>	73.33	</td>	</tr>
+        <tr>	<td>	6人池	</td><td>	10.43	</td><td>	15.22	</td><td>	19.76	</td><td>	24.06	</td><td>	28.13	</td><td>	31.98	</td><td>	35.62	</td><td>	42.33	</td><td>	48.35	</td><td>	53.73	</td><td>	66.75	</td>	</tr>
+        <tr>	<td>	7人池	</td><td>	9	</td><td>	13.2	</td><td>	17.2	</td><td>	21.01	</td><td>	24.65	</td><td>	28.13	</td><td>	31.44	</td><td>	37.61	</td><td>	43.23	</td><td>	48.34	</td><td>	61.08	</td>	</tr>
+        <tr>	<td>	8人池	</td><td>	7.92	</td><td>	11.65	</td><td>	15.22	</td><td>	18.65	</td><td>	21.94	</td><td>	25.09	</td><td>	28.12	</td><td>	33.82	</td><td>	39.06	</td><td>	43.89	</td><td>	56.2	</td>	</tr>
+        <tr>	<td>	9人池	</td><td>	7.08	</td><td>	10.42	</td><td>	13.65	</td><td>	16.76	</td><td>	19.76	</td><td>	22.65	</td><td>	25.44	</td><td>	30.71	</td><td>	35.61	</td><td>	40.17	</td><td>	51.99	</td>	</tr>
+        <tr>	<td>	10人池	</td><td>	6.39	</td><td>	9.43	</td><td>	12.37	</td><td>	15.22	</td><td>	17.97	</td><td>	20.64	</td><td>	23.21	</td><td>	28.12	</td><td>	32.71	</td><td>	37.01	</td><td>	48.33	</td>	</tr>
+        <tr>	<td>	11人池	</td><td>	5.83	</td><td>	8.61	</td><td>	11.31	</td><td>	13.94	</td><td>	16.48	</td><td>	18.95	</td><td>	21.35	</td><td>	25.93	</td><td>	30.24	</td><td>	34.31	</td><td>	45.14	</td>	</tr>
+        <tr>	<td>	12人池	</td><td>	5.35	</td><td>	7.92	</td><td>	10.42	</td><td>	12.85	</td><td>	15.22	</td><td>	17.52	</td><td>	19.76	</td><td>	24.05	</td><td>	28.12	</td><td>	31.97	</td><td>	42.32	</td>	</tr>
+    </table>
+    </form>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>：首行表示投入钻石量(单位:万)，第二行统计整体出货率，第三行之后统计多人池单狙成功率。更多信息请至<b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">几率计算</a></b>选项！）</p>
+    </div>
+    
+    <div id="rateDiv2" style="display:none; text-align:center; font-size:14.5px;">
+    <form>
+    <table class="altrowstable" id="rateTable2">
+        <tr>	<td>	钻石数(万)	</td><td>	1	</td><td>	2	</td><td>	3	</td><td>	4	</td><td>	5	</td><td>	6	</td><td>	7	</td><td>	8	</td><td>	9	</td><td>	10	</td>	</tr>
+        <tr>	<td>	整体出货率	</td><td>	14.5	</td><td>	26.89	</td><td>	37.49	</td><td>	46.55	</td><td>	54.3	</td><td>	60.92	</td><td>	66.59	</td><td>	71.43	</td><td>	75.57	</td><td>	79.11	</td>	</tr>
+        <tr>	<td>	单狙成功率	</td><td>	7.52	</td><td>	14.47	</td><td>	20.9	</td><td>	26.85	</td><td>	32.35	</td><td>	37.43	</td><td>	42.14	</td><td>	46.49	</td><td>	50.51	</td><td>	54.23	</td>	</tr>
+        <tr>	<td>	钻石数(万)	</td><td>	11	</td><td>	12	</td><td>	13	</td><td>	14	</td><td>	15	</td><td>	16	</td><td>	17	</td><td>	18	</td><td>	19	</td><td>	20	</td>	</tr>
+        <tr>	<td>	整体出货率	</td><td>	82.14	</td><td>	84.73	</td><td>	86.94	</td><td>	88.84	</td><td>	90.46	</td><td>	91.84	</td><td>	93.02	</td><td>	94.03	</td><td>	94.9	</td><td>	95.64	</td>	</tr>
+        <tr>	<td>	单狙成功率	</td><td>	57.67	</td><td>	60.85	</td><td>	63.8	</td><td>	66.52	</td><td>	69.03	</td><td>	71.36	</td><td>	73.52	</td><td>	75.51	</td><td>	77.35	</td><td>	79.05	</td>	</tr>
+        <tr>	<td>	钻石数(万)	</td><td>	21	</td><td>	22	</td><td>	23	</td><td>	24	</td><td>	25	</td><td>	26	</td><td>	27	</td><td>	28	</td><td>	29	</td><td>	30	</td>	</tr>
+        <tr>	<td>	整体出货率	</td><td>	96.27	</td><td>	96.81	</td><td>	97.27	</td><td>	97.67	</td><td>	98.01	</td><td>	98.3	</td><td>	98.54	</td><td>	98.75	</td><td>	98.93	</td><td>	99.09	</td>	</tr>
+        <tr>	<td>	单狙成功率	</td><td>	80.63	</td><td>	82.08	</td><td>	83.43	</td><td>	84.67	</td><td>	85.83	</td><td>	86.89	</td><td>	87.88	</td><td>	88.79	</td><td>	89.63	</td><td>	90.41	</td>	</tr>
+        <tr>	<td>	钻石数(万)	</td><td>	31	</td><td>	32	</td><td>	33	</td><td>	34	</td><td>	35	</td><td>	36	</td><td>	37	</td><td>	38	</td><td>	39	</td><td>	40	</td>	</tr>
+        <tr>	<td>	整体出货率	</td><td>	99.22	</td><td>	99.33	</td><td>	99.43	</td><td>	99.51	</td><td>	99.58	</td><td>	99.64	</td><td>	99.7	</td><td>	99.74	</td><td>	99.78	</td><td>	99.81	</td>	</tr>
+        <tr>	<td>	单狙成功率	</td><td>	91.13	</td><td>	91.8	</td><td>	92.42	</td><td>	92.99	</td><td>	93.51	</td><td>	94	</td><td>	94.45	</td><td>	94.87	</td><td>	95.25	</td><td>	95.61	</td>	</tr>
+    </table>
+    </form>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>：每三行的首行表示投入钻石量(单位:万)，第二行统计整体出货率，第三行统计双人池单狙成功率。更多信息请至<b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">几率计算</a></b>选项！）</p>
+    </div>
+    
+    <div id="rateDiv3" style="display:none; text-align:center; font-size:14px;">
+    <form>
+    <table class="altrowstable" id="rateTable3">
+        <tr>	<th>	钻石数(万)	</th><th>	3	</th><th>	4.5	</th><th>	6	</th><th>	7.5	</th><th>	9	</th><th>	10.5	</th><th>	12	</th><th>	15	</th><th>	18	</th><th>	21	</th><th>	30	</th>	</tr>
+        <tr>	<th>	出货率	</th><td>	67.16	</td><td>	81.18	</td><td>	89.22	</td><td>	93.82	</td><td>	96.46	</td><td>	97.79	</td><td>	98.84	</td><td>	99.62	</td><td>	99.87	</td><td>	99.96	</td><td>	100	</td>	</tr>
+        <tr>	<td>	3人池	</td><td>	30.8	</td><td>	42.43	</td><td>	52.11	</td><td>	60.16	</td><td>	66.86	</td><td>	72.43	</td><td>	77.07	</td><td>	84.13	</td><td>	89.02	</td><td>	92.4	</td><td>	97.48	</td>	</tr>
+        <tr>	<td>	4人池	</td><td>	24.11	</td><td>	33.88	</td><td>	42.4	</td><td>	49.82	</td><td>	56.29	</td><td>	61.92	</td><td>	66.82	</td><td>	74.82	</td><td>	80.89	</td><td>	85.5	</td><td>	93.66	</td>	</tr>
+        <tr>	<td>	5人池	</td><td>	19.79	</td><td>	28.17	</td><td>	35.67	</td><td>	42.38	</td><td>	48.4	</td><td>	53.79	</td><td>	58.61	</td><td>	66.8	</td><td>	73.37	</td><td>	78.64	</td><td>	88.98	</td>	</tr>
+        <tr>	<td>	6人池	</td><td>	16.78	</td><td>	24.09	</td><td>	30.75	</td><td>	36.82	</td><td>	42.37	</td><td>	47.43	</td><td>	52.04	</td><td>	60.09	</td><td>	66.79	</td><td>	72.36	</td><td>	84.07	</td>	</tr>
+        <tr>	<td>	7人池	</td><td>	14.57	</td><td>	21.03	</td><td>	27.01	</td><td>	32.53	</td><td>	37.64	</td><td>	42.36	</td><td>	46.72	</td><td>	54.48	</td><td>	61.11	</td><td>	66.78	</td><td>	79.28	</td>	</tr>
+        <tr>	<td>	8人池	</td><td>	12.86	</td><td>	18.66	</td><td>	24.07	</td><td>	29.13	</td><td>	33.84	</td><td>	38.24	</td><td>	42.35	</td><td>	49.77	</td><td>	56.23	</td><td>	61.86	</td><td>	74.77	</td>	</tr>
+        <tr>	<td>	9人池	</td><td>	11.52	</td><td>	16.77	</td><td>	21.71	</td><td>	26.36	</td><td>	30.73	</td><td>	34.84	</td><td>	38.71	</td><td>	45.77	</td><td>	52.02	</td><td>	57.54	</td><td>	70.59	</td>	</tr>
+        <tr>	<td>	10人池	</td><td>	10.43	</td><td>	15.23	</td><td>	19.77	</td><td>	24.07	</td><td>	28.14	</td><td>	31.99	</td><td>	35.63	</td><td>	42.34	</td><td>	48.36	</td><td>	53.74	</td><td>	66.76	</td>	</tr>
+        <tr>	<td>	11人池	</td><td>	9.53	</td><td>	13.94	</td><td>	18.14	</td><td>	22.14	</td><td>	25.94	</td><td>	29.56	</td><td>	33	</td><td>	39.38	</td><td>	45.16	</td><td>	50.38	</td><td>	63.25	</td>	</tr>
+        <tr>	<td>	12人池	</td><td>	8.77	</td><td>	12.86	</td><td>	16.77	</td><td>	20.5	</td><td>	24.06	</td><td>	27.47	</td><td>	30.72	</td><td>	36.8	</td><td>	42.34	</td><td>	47.39	</td><td>	60.05	</td>	</tr>   
+    </table>
+    </form>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>：首行表示投入钻石量(单位:万)，第二行统计整体出货率，第三行之后统计多人池单狙成功率。更多信息请至<b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">几率计算</a></b>选项！）</p>
+    </div>
+    
+    <div id="rateDiv4" style="display:none; text-align:center; font-size:14px;">
+    <form>
+    <table class="altrowstable" id="rateTable4">
+        <tr>	<th>	钻石数(万)	</th><th>	3	</th><th>	4.5	</th><th>	6	</th><th>	7.5	</th><th>	9	</th><th>	10.5	</th><th>	12	</th><th>	15	</th><th>	18	</th><th>	21	</th><th>	30	</th>	</tr>
+        <tr>	<th>	出货率	</th><td>	58.72	</td><td>	73.48	</td><td>	82.96	</td><td>	89.05	</td><td>	92.97	</td><td>	95.48	</td><td>	97.1	</td><td>	98.8	</td><td>	99.51	</td><td>	99.8	</td><td>	100	</td>	</tr>
+        <tr>	<td>	3人池	</td><td>	25.46	</td><td>	35.65	</td><td>	35.65	</td><td>	52.03	</td><td>	58.59	</td><td>	64.25	</td><td>	69.13	</td><td>	76.99	</td><td>	82.85	</td><td>	87.22	</td><td>	94.71	</td>	</tr>
+        <tr>	<td>	4人池	</td><td>	19.77	</td><td>	28.14	</td><td>	28.14	</td><td>	42.35	</td><td>	48.36	</td><td>	53.75	</td><td>	58.57	</td><td>	66.76	</td><td>	73.33	</td><td>	78.61	</td><td>	88.95	</td>	</tr>
+        <tr>	<td>	5人池	</td><td>	16.15	</td><td>	23.22	</td><td>	23.22	</td><td>	35.63	</td><td>	41.06	</td><td>	46.03	</td><td>	50.58	</td><td>	58.56	</td><td>	65.26	</td><td>	70.87	</td><td>	82.83	</td>	</tr>
+        <tr>	<td>	6人池	</td><td>	13.65	</td><td>	19.76	</td><td>	19.76	</td><td>	30.72	</td><td>	35.62	</td><td>	40.18	</td><td>	44.41	</td><td>	52	</td><td>	58.56	</td><td>	64.21	</td><td>	76.96	</td>	</tr>
+        <tr>	<td>	7人池	</td><td>	11.82	</td><td>	17.2	</td><td>	17.2	</td><td>	26.99	</td><td>	31.44	</td><td>	35.62	</td><td>	39.54	</td><td>	46.69	</td><td>	52.99	</td><td>	58.55	</td><td>	71.58	</td>	</tr>
+        <tr>	<td>	8人池	</td><td>	10.42	</td><td>	15.22	</td><td>	15.22	</td><td>	24.06	</td><td>	28.12	</td><td>	31.97	</td><td>	35.62	</td><td>	42.33	</td><td>	48.34	</td><td>	53.72	</td><td>	66.74	</td>	</tr>
+        <tr>	<td>	9人池	</td><td>	9.32	</td><td>	13.65	</td><td>	13.65	</td><td>	21.7	</td><td>	25.44	</td><td>	29	</td><td>	32.39	</td><td>	38.69	</td><td>	44.4	</td><td>	49.58	</td><td>	62.41	</td>	</tr>
+        <tr>	<td>	10人池	</td><td>	8.43	</td><td>	12.37	</td><td>	12.37	</td><td>	19.76	</td><td>	23.21	</td><td>	26.52	</td><td>	29.69	</td><td>	35.61	</td><td>	41.04	</td><td>	46.01	</td><td>	58.54	</td>	</tr>
+        <tr>	<td>	11人池	</td><td>	7.69	</td><td>	11.31	</td><td>	11.31	</td><td>	18.14	</td><td>	21.35	</td><td>	24.43	</td><td>	27.4	</td><td>	32.98	</td><td>	38.14	</td><td>	42.9	</td><td>	55.09	</td>	</tr>
+        <tr>	<td>	12人池	</td><td>	7.07	</td><td>	10.42	</td><td>	10.42	</td><td>	16.76	</td><td>	19.76	</td><td>	22.65	</td><td>	25.43	</td><td>	30.71	</td><td>	35.61	</td><td>	40.16	</td><td>	51.99	</td>	</tr>
+    </table>
+    </form>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>：首行表示投入钻石量(单位:万)，第二行统计整体出货率，第三行之后统计多人池单狙成功率。更多信息请至<b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">几率计算</a></b>选项！）</p>
+    </div>
+    
+    <div id="rateDiv5" style="display:none; text-align:center; font-size:14px;">
+    <form>
+    <table class="altrowstable" id="rateTable5">
+        <tr>	<th>	钻石数(万)	</th><th>	3	</th><th>	4.5	</th><th>	6	</th><th>	7.5	</th><th>	9	</th><th>	10.5	</th><th>	12	</th><th>	15	</th><th>	18	</th><th>	21	</th><th>	30	</th>	</tr>
+        <tr>	<th>	出货率	</th><td>	86.65	</td><td>	95.12	</td><td>	98.22	</td><td>	99.35	</td><td>	99.76	</td><td>	99.91	</td><td>	99.97	</td><td>	100	</td><td>	100	</td><td>	100	</td><td>	100	</td>	</tr>
+        <tr>	<td>	3人池	</td><td>	48.5	</td><td>	63.05	</td><td>	73.48	</td><td>	80.97	</td><td>	86.34	</td><td>	90.2	</td><td>	92.97	</td><td>	96.38	</td><td>	98.14	</td><td>	99.04	</td><td>	99.87	</td>	</tr>
+        <tr>	<td>	4人池	</td><td>	39.17	</td><td>	52.55	</td><td>	62.99	</td><td>	71.14	</td><td>	77.49	</td><td>	82.44	</td><td>	86.31	</td><td>	91.67	</td><td>	94.93	</td><td>	96.92	</td><td>	99.31	</td>	</tr>
+        <tr>	<td>	5人池	</td><td>	32.79	</td><td>	44.9	</td><td>	54.82	</td><td>	62.96	</td><td>	69.64	</td><td>	75.11	</td><td>	79.59	</td><td>	86.28	</td><td>	90.78	</td><td>	93.8	</td><td>	98.12	</td>	</tr>
+        <tr>	<td>	6人池	</td><td>	28.17	</td><td>	39.13	</td><td>	48.41	</td><td>	56.28	</td><td>	62.94	</td><td>	68.59	</td><td>	73.38	</td><td>	80.88	</td><td>	86.27	</td><td>	90.14	</td><td>	96.35	</td>	</tr>
+        <tr>	<td>	7人池	</td><td>	24.69	</td><td>	34.64	</td><td>	43.28	</td><td>	50.78	</td><td>	57.28	</td><td>	62.93	</td><td>	67.83	</td><td>	75.77	</td><td>	81.75	</td><td>	86.26	</td><td>	94.13	</td>	</tr>
+        <tr>	<td>	8人池	</td><td>	21.96	</td><td>	31.07	</td><td>	39.11	</td><td>	46.21	</td><td>	52.48	</td><td>	58.02	</td><td>	62.92	</td><td>	71.06	</td><td>	77.42	</td><td>	82.38	</td><td>	91.63	</td>	</tr>
+        <tr>	<td>	9人池	</td><td>	19.78	</td><td>	28.15	</td><td>	35.65	</td><td>	42.36	</td><td>	48.38	</td><td>	53.76	</td><td>	58.59	</td><td>	66.78	</td><td>	73.35	</td><td>	78.62	</td><td>	88.96	</td>	</tr>
+        <tr>	<td>	10人池	</td><td>	17.99	</td><td>	25.73	</td><td>	32.74	</td><td>	39.09	</td><td>	44.84	</td><td>	50.05	</td><td>	54.77	</td><td>	62.9	</td><td>	69.58	</td><td>	75.05	</td><td>	86.24	</td>	</tr>
+        <tr>	<td>	11人池	</td><td>	16.5	</td><td>	23.69	</td><td>	30.27	</td><td>	36.28	</td><td>	41.77	</td><td>	46.79	</td><td>	51.38	</td><td>	59.4	</td><td>	66.1	</td><td>	71.69	</td><td>	83.51	</td>	</tr>
+        <tr>	<td>	12人池	</td><td>	15.23	</td><td>	21.95	</td><td>	28.14	</td><td>	33.84	</td><td>	39.08	</td><td>	43.91	</td><td>	48.36	</td><td>	56.23	</td><td>	62.89	</td><td>	68.54	</td><td>	80.84	</td>	</tr>
+    </table>
+    </form>
+    <p style="text-align:left; color:#696969">&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>：首行表示投入钻石量(单位:万)，第二行统计整体出货率，第三行之后统计多人池单狙成功率。更多信息请至<b><a onclick="onclickButton('calculationButton'); onclickRadio('PRcalRadio')">几率计算</a></b>选项！）</p>
+    </div>
+</div>
+
+
+<div id="campaignDiv" style="display:none;">
+    <div id="forCloseCal">
+        <form id="campaignForm" method="post" style="text-align:center;"><br><p>
+        国际服往期活动查询<input type="checkbox" name="sourceBox" id="sourceBox" value="sourceBox"  onchange="checkSourceBox();" />
+        </p></form>
+        
+        <div id="imgDiv" style="display:block;">
+        <form id="imgForm">
+        <p>
+        <span></span>
+        <span id=campaignSourceSpan style="display:none;">&nbsp;<span style='color:red; font-size:18px;'>&#x26A0;</span>请输入结束页：<input type="text" maxlength="3" id="campaignSource" name="campaignSource" onkeyup="onkeyuper(this) ; ">
+        <input type="button" class="buttonClass2" name="campaignSourceButton" value="OK" onclick="document.getElementById('waitingSign0').innerHTML='<b>&#x270D;</b>';	document.getElementById('waitingSign0').style.color='#CC0033'; document.getElementById('source').innerHTML=''; campaignUrlArr=[]; if(document.getElementById('campaignSource').value=='') {getNewSource();} else {getPageSource('', 1, document.getElementById('campaignSource').value);}" />
+        &nbsp;<span id='waitingSign0' style='color:#696969; font-size:25px;'></span>
+        </span>
+        <span id='campaignCheckSpan' style="display:block;">&nbsp;请输入日期(YYMMDD)：<input type="text" maxlength="6" id="historyDate" name="historyDate" onkeyup="onkeyuper(this);document.getElementById('calendarID').style.display='none';" onclick="setTimeout('showCalendar()',2);">
+        <input type="button" class="buttonClass2" name="campaignCheckButton" value="OK" onclick="campaignUrlArr=[];getHistoryCampaign(document.getElementById('historyDate').value);" />
+            <span id='waitingSign1' style='color:#696969; font-size:20px;'>&#x263B;</span><span id='waitingSign2' style='color:#696969; font-size:20px;'>&#x263B;</span><span id='waitingSign3' style='color:#696969; font-size:20px;'>&#x263B;</span>
+        </span>
+        </p>
+    
+        <p id='textarea' style="display:none;"><textarea style="width: 586px; height: 326px;" id="source"></textarea></p>
+        <p id="imgP" style="display:block;text-align:center;" ><a id='imgHref'><img id='campaignImg' width=590 height=320></img></a></p>
+        </form>
+        </div>
+    </div>
+    
+    <div id="calendarID" class="calendar" style="display:none;">
+      <div class="calendarBody">
+      	<div class="calendar-list" style="text-align:center;padding:13px;">
+      		<ul>
+            <button type="button" style="width:25px; height:25px;" id="prey" title='上一年' onclick="preYear()"><span style="font-size:13px;position:relative;left:-5px;top:-1px;"><b>&#8810;</b></span></button>&nbsp;
+            <button type="button" style="width:25px; height:25px;" id="prem" title='上个月' onclick="preMonth()"><span style="font-size:13px;position:relative;left:-2px;">&#x276E;</span></button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <span style='font-size:18px;' id="calendarMonth">Month</span> <span style='font-size:18px;' id="calendarYear">Year</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" style="width:25px; height:25px;" id="nextm" title='下个月' onclick="nextMonth()"><span style="font-size:13px;position:relative;left:-2px;">&#x276F;</span></button>&nbsp
+            <button type="button" style="width:25px; height:25px;" id="nexty" title='下一年' onclick="nextYear()" ><span style="font-size:13px;position:relative;left:-5px;top:-1px;"><b>&#8811;</b></span></button>
+          </ul>
+        </div>
+        <div class="calendar-list">
+          <ul>
+          	<li style="background: #E8E8E8;">SUN</li>
+            <li style="background: #E8E8E8;">MON</li>
+            <li style="background: #E8E8E8;">TUE</li>
+            <li style="background: #E8E8E8;">WED</li>
+            <li style="background: #E8E8E8;">THU</li>
+            <li style="background: #E8E8E8;">FRI</li>
+            <li style="background: #E8E8E8;">SAT</li>
+          </ul>
+        </div>
+        <div class=" calendar-list">
+          <ul id="days">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+        var localDate = new Date();
+        todayF=localDate.toISOString().slice(2, 10).replace(/-/g,'');
+        document.getElementById("campaignSource").placeholder="开发人员爬网址专用";
+        document.getElementById("historyDate").placeholder=todayF;
+        getHistoryCampaign(todayF); 
+        
+        var cDay = document.getElementById("days");
+        var cMonth = document.getElementById("calendarMonth");
+        var cYear = document.getElementById("calendarYear");
+        refreshDate();
+        forCloseCal.onclick=function(){ document.getElementById("calendarID").style.display='none' }
+    </script>
+</div>
+
+
+<div id="calculationDiv" style="display:none;">
+<br>
+    <form id="calculationForm" method="post" style="text-align:center;"><p>
+    <font color="#000000">&nbsp;请选择：</font>
+        <input type="radio" name="calculationRadio" value="match" id="matchRadio" checked onclick="onclickRadio('matchRadio')"><font color="#ff0000">女孩升级</font>
+        <input type="radio" name="calculationRadio" value="gift" id="giftRadio" onclick="onclickRadio('giftRadio')"><font color="#0000FF">礼物经验</font>
+        <input type="radio" name="calculationRadio" value="oil" id="oilRadio" onclick="onclickRadio('oilRadio')"><font color="#fc870d">涂油提升</font>
+        <input type="radio" name="calculationRadio" value="coin" id="coinRadio" onclick="onclickRadio('coinRadio')"><font color="#824200">代币计算</font>
+        <input type="radio" name="calculationRadio" value="PRcal" id="PRcalRadio" onclick="onclickRadio('PRcalRadio')"><font color="#ff00ff">几率计算</font>
+    </p></form>
+
+    <div id="matchDiv" style="display:block;">
+    <form id="matchForm">
+    <p>&nbsp;请输入你的岛主等级：<input type="text" maxlength="3" id="yourLevel" name="yourLevel" onkeyup="onkeyuper(this,1,maxLevel) ; writeFP(this.value,'fp'); ">
+       &nbsp;FP=<input type="text" maxlength="3" id="fp" name="fp" readonly style="background:#DCDCDC" onpropertychange="writeWaterNum(); " onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+    </p>
+    <p>&nbsp;请输入女孩当前等级：<input type="text" maxlength="2" id="currentGirlLevel" name="currentGirlLevel" onkeyup="onkeyuper(this,1,matchMaxGirlLevel-1); witeNextExp(); writeTotalExp(); "></p>
+    <p>&nbsp;请输入女孩目标等级：<input type="text" maxlength="2" id="targetGirlLevel" name="targetGirlLevel" onkeyup="onkeyuper(this,1,matchMaxGirlLevel);  writeTotalExp(); "></p>
+    <p>&nbsp;请输入女孩下级经验：<input type="text"               id="nextExp" name="nextExp" onkeyup="onkeyuper(this); writeTotalExp(); "></p>
+    <p>&nbsp;升级需要的总经验为：<input type="text"               id="totalExp" name="totalExp" readonly style="background:#DCDCDC" onpropertychange="writeTotalNum();" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"></p>
+    <p>&nbsp;请输入每局所得经验：<input type="text"               id="exp" name="exp" onkeyup="onkeyuper(this); writeTotalNum(); "></p>
+    <p>&nbsp;需要比赛的总局数为：<input type="text"               id="totalMatchNum" name="totalMatchNum" readonly style="background:#DCDCDC" onpropertychange="writeWaterNum();" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"></p>
+    <p>&nbsp;请输入每局需要的FP：<input type="text"               id="neededFP" name="neededFP" onkeyup="onkeyuper(this); writeWaterNum(); "></p>
+    <p>&nbsp;需要消耗的水量总数：<input type="text"               id="totalWaterNum" name="totalWaterNum" readonly style="background:#DCDCDC" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"></p>
+    <br>
+    <p style="text-align:center;"><input class="buttonClass2" type="reset" name="matchReset" value="Reset"></p>
+    </p></form>
+    <script language="javascript">
+        document.getElementById("yourLevel").placeholder=("请输入1-" + maxLevel)
+        document.getElementById("currentGirlLevel").placeholder=("请输入1-" + (matchMaxGirlLevel-1))
+        document.getElementById("targetGirlLevel").placeholder=("请输入1-" + matchMaxGirlLevel)
+        document.getElementById("nextExp").placeholder="请修改为实际值"
+        document.getElementById("exp").placeholder="请输入正整数"
+        document.getElementById("neededFP").placeholder="请输入正整数"
+    </script>
+    <br>
+    </div>
+    
+    <div id="giftDiv" style="display:none; text-align:center;">
+    <form id="giftForm" name="giftForm" method="post" action="">
+    <table cellpadding="0" cellspacing="0" class="altrowstable" id="giftTable" style="font-size:11px">
+        <tr>
+            <th Name="giftName" style="font-size:10.5px">礼物</th>
+            <th Name="experience" EditType="TextBox" style="font-size:10.5px">&nbsp;&nbsp;&nbsp;&nbsp;经验<input type="checkbox" name="expBox" id="expBox" value="expBox" style="font-size:10.5px" onchange="rewriteGiftTable();" />(勾选EXP*1.5)&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th Name="amount" EditType="TextBox" style="font-size:10.5px">&nbsp;&nbsp;&nbsp;&nbsp;数量(请点击单元格输入)&nbsp;&nbsp;&nbsp;&nbsp;</th>
+            <th Name="sumExp" Expression="amount*experience" style="font-size:10.5px">合计(自动)</th>
+        </tr>
+    </table>
+   
+    <p><input type="button" class="buttonClass2" name="giftResetButton" value="Reset" onclick="giftReset();" /></p>
+    </form>
+    <script language="javascript">
+        createGiftTab();
+        var giftTable = document.getElementById("giftTable");
+        // 设置表格可编辑  
+        // 可一次设置多个，例如：EditTables(tb1,tb2,tb2,......)  
+        EditTables(giftTable);
+    </script>
+    </div>
+
+    <div style="display:none; font-size:15px;" id="oilDiv" >
+    <form name="oilForm" id="oilForm">
+    <p>&nbsp;请选择涂油女孩：
+    <select  id="oilGirlSelect" name="oilGirlSelect" onclick="writeOilTable()">
+    </select>
+    </p>
+    <script type="text/javascript">
+        addOilSelect();
+    </script>
+    <p>&nbsp;请输入女孩等级：&nbsp;<input type="text" maxlength="2" id="oilGirlLevel" name="oilGirlLevel"  placeholder="1" onkeyup="onkeyuper(this,1,oilMaxGirlLevel); writeOilTable(); "></p>
+    <p>&nbsp;位置一涂油方案：
+    <select  id="oilSelect1" name="oilSelect1" onclick="writeOilTable()">
+    <OPTION value=pow selected>力量油</OPTION>
+    <OPTION value=tec>技巧油</OPTION>
+    <OPTION value=stm>体力油</OPTION>
+    </select>
+    <select  id="oilValueSelect1" name="oilValueSelect1" onclick="writeOilTable()">
+    <OPTION value=0 selected>0</OPTION>
+    <OPTION value=1>1</OPTION>
+    <OPTION value=5>5</OPTION>
+    <OPTION value=7>7</OPTION>
+    <OPTION value=10>10</OPTION>
+    <OPTION value=15>15</OPTION>
+    <OPTION value=20>20</OPTION>
+    <OPTION value=25>25</OPTION>
+    </select>
+    </p>
+    <p>&nbsp;位置二涂油方案：
+    <select  id="oilSelect2" name="oilSelect2" onclick="writeOilTable()">
+    <OPTION value=pow selected>力量油</OPTION>
+    <OPTION value=tec>技巧油</OPTION>
+    <OPTION value=stm>体力油</OPTION>
+    </select>
+    <select  id="oilValueSelect2" name="oilValueSelect2" onclick="writeOilTable()">
+    <OPTION value=0 selected>0</OPTION>
+    <OPTION value=1>1</OPTION>
+    <OPTION value=5>5</OPTION>
+    <OPTION value=7>7</OPTION>
+    <OPTION value=10>10</OPTION>
+    <OPTION value=15>15</OPTION>
+    <OPTION value=20>20</OPTION>
+    <OPTION value=25>25</OPTION>
+    </select>
+    </p>
+    <p>&nbsp;位置三涂油方案：
+    <select  id="oilSelect3" name="oilSelect3" onclick="writeOilTable()">
+    <OPTION value=pow selected>力量油</OPTION>
+    <OPTION value=tec>技巧油</OPTION>
+    <OPTION value=stm>体力油</OPTION>
+    </select>
+    <select  id="oilValueSelect3" name="oilValueSelect3" onclick="writeOilTable()">
+    <OPTION value=0 selected>0</OPTION>
+    <OPTION value=1>1</OPTION>
+    <OPTION value=5>5</OPTION>
+    <OPTION value=7>7</OPTION>
+    <OPTION value=10>10</OPTION>
+    <OPTION value=15>15</OPTION>
+    <OPTION value=20>20</OPTION>
+    <OPTION value=25>25</OPTION>
+    </select>
+    </p>
+    <p style="text-align:center; font-size:15px">
+    <br>
+    <table id="oilTable" name="oilTable" style="text-align:center; font-size:12px" >
+        <tr bgcolor="#9c9c9c">
+            <th>Misaki(Lv1)</th><th>&nbsp; 涂油前属性值 &nbsp;</th><th>&nbsp; 涂油后属性值 &nbsp;</th>
+        </tr>
+        <tr bgcolor="#ff8181">
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 力量 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1040</td><td>1040</td>
+        </tr>
+        <tr bgcolor="#a8d2a7">
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 技巧 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>900</td><td>900</td>
+        </tr>
+        <tr bgcolor="#f8de90">
+            <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 体力 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>1050</td><td>1050</td>
+        </tr>
+    </table><br>
+    </p>
+    <p style="text-align:center;"><input class="buttonClass2" type="button" onclick="oilFormReset()" value="Reset"></p>
+    </form>
+    </div>
+
+    <div id="coinDiv" style="display:none; text-align:left;">
+    <form id="coinForm" name="coinForm" method="post" action="">
+    <p>&nbsp;岛主等级：<input type="text" maxlength="3" id="yourlevel2" name="yourlevel2" onkeyup="onkeyuper(this,1,maxLevel) ; writeFP(this.value,'fp2'); ">
+       &nbsp;FP=<input type="text" maxlength="3" id="fp2" name="fp2" readonly style="background:#DCDCDC" onpropertychange="writeNeededWater();" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+    </p>
+    <p>&nbsp;当前分数：<input type="text" id="currentScore" name="currentScore" onkeyup="onkeyuper(this,0);writeMatchNum();"></p>
+    <p>&nbsp;目标分数：<input type="text" id="targetScore" name="targetScore" onkeyup="onkeyuper(this,0);writeMatchNum();"></p>
+    <p>&nbsp;每局均分：<input type="text" id="averageScore" name="averageScore" onkeyup="onkeyuper(this,1);writeMatchNum();"></p>
+    <p>&nbsp;每局经验：<input type="text" id="averageExp" name="averageExp" onkeyup="onkeyuper(this,0);writeGetExp();"></p>
+    <p>&nbsp;每局代币：<input type="text" id="averageCoin" name="averageCoin" onkeyup="onkeyuper(this,0);writeGetCoin();"></p>
+    <p>&nbsp;每局需FP：<input type="text" id="averageFP" name="averageFP" onkeyup="onkeyuper(this,1);writeNeededWater();"></p>
+    <p>&nbsp;比赛胜率：<input type="text" id="winningRate" name="winningRate" value=100 onkeyup="onkeyuper(this,0,100);writeGetCoin();writeGetExp();">&nbsp;%</p>
+    <p>&nbsp;比赛场数：<input type="text" id="matchNum" name="matchNum" readonly style="background:#DCDCDC" onpropertychange="writeNeededWater(); writeGetCoin(); writeGetExp();" >
+       &nbsp;比赛耗水：<input type="text" id="neededWater" name="neededWater" readonly style="background:#DCDCDC" ></p>
+    <p>&nbsp;收获代币：<input type="text" id="getCoin" name="getCoin" readonly style="background:#DCDCDC" >
+       &nbsp;经验提升：<input type="text" id="getExp" name="getExp" readonly style="background:#DCDCDC" ></p>
+    <p style="text-align:center;"><input type="reset" class="buttonClass2" name="coinResetButton" value="Reset" /></p>
+    </form>
+    <script language="javascript">
+        document.getElementById("yourlevel2").placeholder=("请输入1-" + maxLevel)
+        document.getElementById("currentScore").placeholder="请输入整数"
+        document.getElementById("targetScore").placeholder="请输入整数"
+        document.getElementById("averageScore").placeholder="请输入正整数"
+        document.getElementById("averageExp").placeholder="请输入整数"
+        document.getElementById("averageCoin").placeholder="请输入整数"
+        document.getElementById("averageFP").placeholder="请输入正整数"
+    </script>
+    </div>
+
+    <div id="PRcalDiv" style="display:none; text-align:left;">
+    <form id="PRcalForm" name="PRcalForm" method="post" action="">
+    <p>&nbsp;请选择卡池种类:
+    <select  id="PRcalSelect1" name="PRcalSelect1" onclick="addPRcalSelect2(); PRcalculation();" onchange="PRcalculation();">
+    <OPTION value=poolSelect1 selected>1.1多人池</OPTION>
+    <OPTION value=poolSelect2>1.1双人池</OPTION>
+    <OPTION value=poolSelect3>3步3.3池</OPTION>
+    <OPTION value=poolSelect4>3步送1池</OPTION>
+    <OPTION value=poolSelect5>3.3多人池</OPTION>
+    <OPTION value=poolSelect6>1.1生日池</OPTION>
+    </select>
+    <p>&nbsp;请选择卡池人数:
+    <select  id="PRcalSelect2" name="PRcalSelect2" onclick="PRcalculation();" >
+    </select>    
+    <p>&nbsp;请输入投入钻石：<input type="text" id="stoneNum" name="stoneNum" placeholder="" value="" onkeyup="onkeyuper(this,0); PRcalculation(); "></p>
+    <p id="sr1" style="display:none;">&nbsp;SR衣服的总数为：<input type="text" id="srNum" name="srNum" onkeyup="onkeyuper(this,1); PRcalculation(); "></p>
+    <p>&nbsp;共可抽十连次数：<input type="text" id="tenfoldNum" name="tenfoldNum" readonly style="background:#DCDCDC" ></p>
+    <p id="round1" style="display:none;">&nbsp;轮数为/15000钻：<input type="text" id="roundNum1" name="roundNum1" readonly style="background:#DCDCDC" ></p>
+    <p id="round2" style="display:none;">&nbsp;单独的十连抽为：<input type="text" id="roundNum2" name="roundNum2" readonly style="background:#DCDCDC" ></p>
+    <p>&nbsp;出货成功几率为：<input type="text" id="SuccessRate1" name="SuccessRate1" readonly style="background:#DCDCDC" ></p>
+    <p id="ssr2">&nbsp;单狙成功几率为：<input type="text" id="SuccessRate2" name="SuccessRate2" readonly style="background:#DCDCDC" ></p>
+    <p id="sr2" style="display:none;">&nbsp;抽到战术几率为：<input type="text" id="SuccessRate3" name="SuccessRate3" readonly style="background:#DCDCDC" ></p>
+    <p><br><br><br></p>
+    <p id="br"><br><br><br><br></p>
+    <p id="br2" style="display:none;"><br><br></p>
+    <p style="text-align:center;"><input type="button" class="buttonClass2" name="PRcalResetButton" value="Reset" onclick="PRcalReset();" /></p>
+    <br>
+    </form>
+    <script language="javascript">
+        document.getElementById("stoneNum").placeholder="建议输入5000的倍数"
+        document.getElementById("srNum").placeholder="请输入正整数"
+        addPRcalSelect2();
+    </script>
+    </div>
+</div>
+
+
+<div id="otherDataDiv" style="display:none; text-align:center;" >
+    <form id="otherDataForm" method="post"><p id="otherDataP">
+        <font color="#000000">请选择:</font>
+    </p></form>
+</div>
+
+
+
+<script language="javascript">
+
+
+////////////////////////////////////////////////////////////////////////
+////////////          以下为其它数据模块的示例部分          ////////////
+////////////////////////////////////////////////////////////////////////
+
+//说明页的文字内容示例：
+descriptionText = "&nbsp;&nbsp;&nbsp;&nbsp;" +
+"之所以增添“其它数据”这个模块，是为满足不同玩家“自定义数据”的作用！" +
+"所谓自定义数据，就是把你认为有用的数据搬到小程序上来，避免每次翻一堆图片或EXCEL表格去查数据。" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"下面以星等级与排名关系表为例进行说明如何添加一个新项(星等级表)到该模块：" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"首先我们先使用记事本或写字板等文本工具打开脚本，找到“这里是你的代码区域（开始）”字样(大约在最后的位置)。" +
+"接下设计表格：第一行内容为“星等级”，“排名”；第二行内容为“SSS+”，“150”；第三行内容为“SSS”，“500”；第四行内容为“SSS-”，“1500”；第五行内容为“SS+”，“8000”。" +
+"剩下仅需要以下两步：" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"<b>1.设定一个数组变量，假设命名为starArr</b>" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"<font color='red'>starArr = [" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"['星等级','排名']," +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"['SSS+','150']," +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"['SSS','500']," +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"['SSS-','1500']," +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"['SS+','8000']" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"]</font>" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"<b>2.将该数组代入函数addOtherData，像这样：</b>" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"<font color='red'>addOtherData('星等级表','',starArr)</font>" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"这样就完成了！" +
+"下面我对addOtherData函数的几个参数做一下简要说明：" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"第一个参数为'星等级表'：由于每执行一次addOtherData函数程序都会在“其它数据”模块增加一个新选项，该参数为选项的说明(就是新增的那个圆点后的文字，要求尽量简洁！)；" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"第二个参数为''：即为空，在表格之前的一些描述性文字，如果表格上方不想有文字这里就用一组引号占位。BTW，你现在看到的所有文字实际都是首页选项的该部分内容。" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"第三个参数为你定义的数组，程序会按照数组的内容重组成一个表格。当然像这种很简单的数组可以写成一行，甚至可以不设定变量直接代入函数，像这样：" +
+"<br>&nbsp;&nbsp;&nbsp;&nbsp;" +
+"<font color='red'>addOtherData('星等级表', '' , [ ['星等级','排名'],['SSS+','150'],['SSS','500'],['SSS-','1500'],['SS+','8000'] ] )</font>"
+
+//将文字内容代入函数：
+addOtherData('说明', descriptionText,'','(<b>注</b>:"说明"、"星等级表" 和 "CG"三项均只是示例展示，建议注释掉并替换成需要的数据表！)'); resizeFont(13.5); 
+
+//星等级表页面星等级与排名关系表示例：
+addOtherData('星级', '<br><br><br><br>' , [ ['星等级','排名'],['SSS+','150'],['SSS','500'],['SSS-','1500'],['SS+','8000'] ],'<br><br><br><br><br><br><br><br>' ); resizeFont(15)
+
+//最后举一个稍微复杂点的例子，CG/经验/FP的关系表，包含了合并单元格，加粗字体，重新设置字体大小等方法
+//先定义数组：（注意每行的元素个数是不同的，之所以不使用''补齐cell是因为我们要对其进行单元格合并）
+cgArr = [
+['&nbsp;&nbsp;&nbsp;&nbsp;级别&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;关卡&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;体力&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;经验&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;CG&nbsp;&nbsp;&nbsp;&nbsp;','经验/FP','CG/FP'],
+['A级',  '决赛',  '7',  '42',  '32',  '6',         '4.571429'],
+[        '2',     '6',  '37',  '30',  '6.166667',  '5'       ],
+['B级',  '决赛',  '6',  '33',  '28',  '5.5',       '4.666667'],
+[        '晋级',  '12', '24',  '54',  '2',         '4.5'     ],
+['C级',  '决赛',  '5',  '24',  '26',  '4.8',       '5.2'     ],
+[        '晋级',  '10', '20',  '44',  '2',         '4.4'     ],
+['D级',  '决赛',  '4',  '17',  '18',  '4.25',      '4.5'     ],
+[        '晋级',  '7',  '12',  '30',  '1.714286',  '4.285714'],
+['E级',  '决赛',  '3',  '11',  '14',  '3.666667',  '4.666667'],
+[        '晋级',  '5',  '7',   '20',  '1.4',       '4'       ],
+['F级',  '决赛',  '3',  '6',   '12',  '2',         '4'       ]
+]
+
+//定义表格前的说明和表格后的备注
+cgTEXT = '&nbsp;&nbsp;&nbsp;&nbsp;体力减半各关卡单位FP获得CG、经验值对应表: '
+cgRemark = '&nbsp;&nbsp;&nbsp;&nbsp;（<b>注</b>: A2单位FP经验最高，C决单位FP开CG最划算！）'
+
+//将各值代入函数：(下面我们用到了函数addOtherData的所有参数)
+addOtherData('CG', cgTEXT, cgArr, cgRemark); tableRowSpan(1,0,1); tableRowSpan(3,0,1); tableRowSpan(5,0,1); tableRowSpan(7,0,1); tableRowSpan(9,0,1); tableFontWeight(); tableFontWeight('1','0'); tableFontWeight('3','0'); tableFontWeight('5','0'); tableFontWeight('7','0'); tableFontWeight('9','0'); tableFontWeight('11',0); resizeFont(11.2,'table');
+
+//注意到上面的addOtherData函数后面还跟了很多函数，下面我一一说明这些函数：
+//tableRowSpan(i,j,k) 将i行j列的单元格向下扩展k个单元格，和下面的tableColSpan(i,j,k)都是合并单元格用的
+//tableColSpan(i,j,k) 将i行j列的单元格向右扩展k个单元格，本例未用到
+//tableFontWeight(i,j) 设置粗体字，用法：tableFontWeight()将首行设置成粗体; tableFontWeight(i)将整个第i行设置成粗体; tableFontWeight('',j)将整个第j列设置成粗体; tableFontWeight(i,j)将第i行，第j列的单个表格设置成粗体
+//resizeFont(size,obj) 重新定义文字的大小，三种用法。例：resizeFont(15,'table')仅将表格内文字大小指定为15px; resizeFont(15,'text')仅将表格之外的文字大小指定为15px; resizeFont(15)将所有文字都指定为15px
+
+//我们上面的例子有些复杂，实际你在真实应用中可能只会用tableFontWeight()把首行字体加粗或者resizeFont(XXX)重新调整一下字体大小
+
+////////////////////////////////////////////////////////////////////////
+////////////           这里是你的代码区域（开始）           ////////////
+////////////////////////////////////////////////////////////////////////
+
+//注：无论是“说明”、“星等级表” 还是 “CG”，都只是为了举例说明。
+//建议你在开始添加自己的数据表格后将它们全部注释掉！
+//即在“addOtherData('说明', descriptionText);”、“addOtherData('星等级表', '' ...”和“addOtherData('CG', cgTEXT, cgArr, cgRemark)...”这三行前面加上双斜杠“//”即可！
+aaaaa = [
+[1,2,3],
+[4,5,6],
+[7,8,9]
+]
+//addOtherData('我的第一张表' , '表前说点啥？？' , aaaaa, '表下面写点备注？？？')
+
+CampaignFpArr=[
+['关卡','&nbsp;&nbsp;&nbsp;&nbsp;消耗&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;经验值(加粗列为有流行)&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;经验/FP(加粗列为有流行)&nbsp;&nbsp;&nbsp;&nbsp;'],
+['SS决','26','111','74','4.27','2.85'],
+['SS+1~半块','36','144','96','4.00','2.67'],
+['SS+决','39','177','118','4.54','3.03'],
+['SSS+1~半决','48','192','128','4.00','2.67'],
+['SSS决','52','237','158','4.56','3.04']
+]
+CampaignFpText='<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;常规活动经验与FP对比表:'
+CampaignFpRemark='&nbsp;&nbsp;&nbsp;&nbsp;各关卡决赛经验相对较高，SS+决与SSS决相差不大<br><br><br><br><br><br><br><br><br>'
+addOtherData('EXP' , CampaignFpText , CampaignFpArr , CampaignFpRemark); tableColSpan(0,2,1);tableColSpan(0,3,1);tableFontWeight();tableFontWeight('',2);tableFontWeight('',4);tableFontWeight('',0);resizeFont(12,'table')
+
+webUrl0='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'
+webUrl1='https://doax.cc'
+webUrl2='https://doax.cf'
+webUrl3='https://tieba.baidu.com/f?kw=%E6%AD%BB%E6%88%96%E7%94%9F%E6%B2%99%E6%BB%A9%E6%8E%92%E7%90%83%E7%BB%B4%E7%BA%B3%E6%96%AF%E5%81%87%E6%9C%9F'
+webUrl4='https://game.doaxvv.com/cn/index.html'
+urlText= "<br>wiki: " + "<a href='https://doax.cc'>" + webUrl1 + "</a><br><br>" + 
+"观星: " + "<a href='https://doax.cf'>" + webUrl2 + "</a><br><br>" + 
+"官网: " + "<a href='https://game.doaxvv.com/cn/index.html'>" + webUrl4 + "</a><br><br>" +
+"贴吧: " + "<a href='https://tieba.baidu.com/f?kw=%E6%AD%BB%E6%88%96%E7%94%9F%E6%B2%99%E6%BB%A9%E6%8E%92%E7%90%83%E7%BB%B4%E7%BA%B3%E6%96%AF%E5%81%87%E6%9C%9F'>" + "https://tieba.baidu.com/f?kw=死或生沙滩排球维纳斯假期</a><br><br>" +
+"<br><br><br><br><br><br><br><br>"
+addOtherData('web',urlText); resizeFont(20);
+
+
+////////////////////////////////////////////////////////////////////////
+////////////           这里是你的代码区域（结束）           ////////////
+////////////////////////////////////////////////////////////////////////
+
+</script>
+
+</td>
+</fieldset>
+</BODY>
+<script language="javascript">
+requiredHeight = document.body.clientHeight + window.screen.height - window.screen.availHeight + 20
+if (windowHeight < requiredHeight) {window.resizeTo(windowWidth, requiredHeight)}
+</script>
+</html>
