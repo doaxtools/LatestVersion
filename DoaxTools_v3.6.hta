@@ -262,7 +262,7 @@ while (true) {
 
 
 // 常量设定
-version='3.6'
+version='3.5'
 var maxLevel=200       //设定岛主等级的最大值
 var maxGirlLevel=86    //设定女孩等级的最大值
 var matchMaxGirlLevel=maxGirlLevel    //在女孩升级选项中允许输入的女孩最高等级（设定此值是因为有时候拿不到最新数据，如女孩等级开放到87级，第一时间拿不到86级升至87级所需要的经验值）
@@ -409,11 +409,12 @@ xmlHttps.onreadystatechange = function() {
             if(newVersion.split('.')[0] == version.split('.')[0]) { if(parseInt(newVersion.split('.')[1]) > parseInt(version.split('.')[1])) {newversion = true} else {newversion = false} }
         }
         if(newversion) {
-            document.getElementById('checkVersion').style.color='green';
+            document.getElementById('checkVersion').style.color='#D98719'; 
             document.getElementById('checkVersion').title='发现新版本，点击下载！'
+            document.getElementById('checkVersion').innerHTML='&nbsp;&nbsp;<b>&#128276;&#128276;&#128276;</b>'
             //document.getElementById('checkVersion').href='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'
             document.getElementById('checkVersion').href='https://codeload.github.com/doaxtools/LatestVersion/zip/refs/heads/master'
-        }
+        } 
     }
 }
 xmlHttps.open("GET", updateUrl, true);
@@ -1447,8 +1448,8 @@ function tableRowSpan(i,j,k) {
 <td valign="top" ><font color="#333333">
 
 <div id="firstDiv" style="display:block; font-size:16px; color:#000000; opacity:0.8; background-image: url(https://i0.hdslb.com/bfs/article/32e81ca947603eae0aa0270770ac2cc566db3fd8.jpg); background-size:485px,500px;" >
-<br>
-<span><a id='checkVersion' style='text-decoration:none;color:white;font-size:18px' title='已是最新版本！'>&nbsp;&nbsp;<b>&#x2709;!</b></a></span>
+<br><!-- <span style='color:green;font-size:18px'>&#128190;&#128279;&#128305;</span> -->
+<span><a id='checkVersion' style='text-decoration:none;color:white;font-size:18px' title='已是最新版本！'>&nbsp;&nbsp;<b>&#128277;</b></a></span>
 <pre>
                                             <font color='DarkOrchid'>+------</font><b><a onclick="onclickButton('propertyButton'); onclickRadio('powRadio')">&hearts;力量女孩</a></b>
                        +------女孩属性------<font color='DarkOrchid'>+------</font><b><a onclick="onclickButton('propertyButton'); onclickRadio('tecRadio')">&hearts;技巧女孩</a></b>
@@ -2291,8 +2292,8 @@ CampaignFpArr=[
 CampaignFpText='<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;常规活动经验与FP对比表:'
 CampaignFpRemark='&nbsp;&nbsp;&nbsp;&nbsp;各关卡决赛经验相对较高，SS+决与SSS决相差不大<br><br><br><br><br><br><br><br><br>'
 addOtherData('EXP' , CampaignFpText , CampaignFpArr , CampaignFpRemark); tableColSpan(0,2,1);tableColSpan(0,3,1);tableFontWeight();tableFontWeight('',2);tableFontWeight('',4);tableFontWeight('',0);resizeFont(12,'table')
-
-webUrl0='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'
+downloadUrl1='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'
+downloadUrl2='https://codeload.github.com/doaxtools/LatestVersion/zip/refs/heads/master'
 webUrl1='https://doax.cc'
 webUrl2='https://doax.cf'
 webUrl3='https://tieba.baidu.com/f?kw=%E6%AD%BB%E6%88%96%E7%94%9F%E6%B2%99%E6%BB%A9%E6%8E%92%E7%90%83%E7%BB%B4%E7%BA%B3%E6%96%AF%E5%81%87%E6%9C%9F'
@@ -2301,8 +2302,16 @@ urlText= "<br>wiki: " + "<a href='https://doax.cc'>" + webUrl1 + "</a><br><br>" 
 "观星: " + "<a href='https://doax.cf'>" + webUrl2 + "</a><br><br>" + 
 "官网: " + "<a href='https://game.doaxvv.com/cn/index.html'>" + webUrl4 + "</a><br><br>" +
 "贴吧: " + "<a href='https://tieba.baidu.com/f?kw=%E6%AD%BB%E6%88%96%E7%94%9F%E6%B2%99%E6%BB%A9%E6%8E%92%E7%90%83%E7%BB%B4%E7%BA%B3%E6%96%AF%E5%81%87%E6%9C%9F'>" + "https://tieba.baidu.com/f?kw=死或生沙滩排球维纳斯假期</a><br><br>" +
-"<br><br><br><br><br><br><br><br>"
+"更新: " + "<a style='text-decoration:none' title='通过百度网盘下载' href='https://pan.baidu.com/s/19WVy2f4g3RCR7ReEPW8K_Q?pwd=pm8f'>&#128190;</a>&#xb9;&nbsp;" +
+           "<a style='text-decoration:none' title='通过gitHub打包下载' href='https://codeload.github.com/doaxtools/LatestVersion/zip/refs/heads/master'>&#128190;</a>&#xb2;<br><br>" +
+"<br><br><br><br><br><p style='text-align:center;font-size:23px;'><a style='text-decoration:none;color:white' title='给卑微小萌新发邮件(mengxin@vip.freetcp.com)' href='mailto:mengxin@vip.freetcp.com'><b>&#x2709;</b></a></p>"
 addOtherData('web',urlText); resizeFont(20);
+
+
+
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////////
