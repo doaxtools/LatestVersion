@@ -1,5 +1,5 @@
 # LatestVersion
-<span id="noticestart">Notice:<br>
+<span id="noticestart">更新信息:<br>
 1.xxxx<br>
 2.yyyyy<br>
 3.zzzz<br>
