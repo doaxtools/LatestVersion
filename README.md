@@ -1,6 +1,9 @@
 # LatestVersion
-<span id="noticestart">更新信息:<br>
-1.xxxx<br>
-2.yyyyy<br>
-3.zzzz<br>
+<span id="noticestart">Notice:
+v3.7; 2022/06/05; @卑微小萌新;
+微调了版本更新提示，加入了新版本描述信息(试用)
+在其他数据的web项加入了通过github和百度网盘两种方式下载新版本，并提供了作者的邮箱。
+他数据的web项里的链接现在是使用用户设置的默认浏览器打开而不是HTA程序绑定的IE打开（但是往期活动依然以原来的方式打开！）
+更改了一些函数名称并对其作了简单注释以便更好理解函数用途
+其它一些细节的微调
 </span><span id="noticeend"></span>
