@@ -1,5 +1,5 @@
 # LatestVersion
-<span id="noticestart">Notice:
+<span id="noticestart">ChangeLog:
 v3.7; 2022/06/05; @卑微小萌新;
 微调了版本更新提示，加入了新版本描述信息(试用)
 在其他数据的web项加入了通过github和百度网盘两种方式下载新版本，并提供了作者的邮箱。
