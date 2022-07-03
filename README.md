@@ -10,3 +10,4 @@
 支持不同版本对应推送不同的远程数据
 修复3.11版本点击下拉菜单可能导致程序闪退的BUG
 </span><span id="noticeend"></span>
+scrollingMarqueestart 远程空间无法访问，请刷新重试！ scrollingMarqueeend
