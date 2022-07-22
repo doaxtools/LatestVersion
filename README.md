@@ -11,32 +11,24 @@
 修复3.11版本点击下拉菜单可能导致程序闪退的BUG
 </span><span id="noticeend"></span>
 scrollingMarqueestart 远程空间无法访问，请刷新重试！ scrollingMarqueeend
-
 //remotestart
 //格式化时间字符串，值为格林尼治标准时间: YYYYMMDDhhmm
 utc_remote=new Date().toISOString().replace(/-|T|:/g,'').slice(0,12);
-
 //发布最新版本，低于该版本所有用户将收到铃铛图标更新提示，请至少保留一个Notice的定义，否则3.12版本会产生报错。
 newVersion='3.16';
 Notice=''; 
-
 //发现新版本后于铃铛图标后出现气泡图标，鼠标指向该图标出现changelog提示
 changelog='v3.16  2022/07/03  @卑微小萌新\n规避了远程空间供应商注入广告及篡改404页面可能导致程序报错的问题\n重新启动github数据做为备用方案\n衣服推荐项的下拉菜单添加了背景颜色，备注的默认值循环显示不同的“小贴士”';
-
 //若使用的程序为最新版本，则在条件时间段内出现一个橙红色气泡提示，鼠标指向出现Notice提示。3.13之后的版本用滚动字幕替代该功能。
 if(utc_remote>='202206210000' && utc_remote<'202206211600') { Notice='小提示:\n回忆风车明天凌晨三点到期，\n没送的抓紧送掉了！' } else { Notice='' };
-
 //在条件时间段出现滚动字幕提示
 if(utc_remote>='202206270000' && utc_remote<'202206271500') { scrollingMarquee='<font color="red"><b>注意</b>：本次活动今天<b>23点</b>即将到期，分没刷够的或顶油还没送的需要抓紧时间了！</font>'; };
-
 //固定时间出现滚动字幕提示
 if(utc_remote.slice(6,8)=='02'){scrollingMarquee=scrollingMarquee+'&nbsp;&nbsp;&nbsp;&nbsp;<font color=""><b>提示</b>：家具商店的VIP币已更新！</font>';};
 if(utc_remote.slice(5,6)%2==0 && utc_remote.slice(6,8)=='01'){scrollingMarquee=scrollingMarquee+'&nbsp;&nbsp;&nbsp;&nbsp;<font color=""><b>提示</b>：月票辅助券即将过期！</font>';};
 if(new Date().getDay()==1) {scrollingMarquee=scrollingMarquee+'&nbsp;&nbsp;&nbsp;&nbsp;<font color=""><b>提示</b>：活动商店的新常驻扭蛋券已更新！</font>';};
-
 //在web选项插入一条（或几条）有时效性的URL链接
 if (document.getElementById('remoteweburl') && utc_remote<202206230000) {document.getElementById('remoteweburl').innerHTML="活动介绍: <a href='#' rel='external nofollow' onclick='useDefBrowser(\"https://tieba.baidu.com/p/7889790615\")'>https://tieba.baidu.com/p/7889790615</a><br><br>"};
-
 //在其它数据最后部分添加一项
 if(newVersion=='3.14') {
     if(version==newVersion) { remoteOption='ChangeLog'; } else { remoteOption='更新提示'; }
@@ -60,7 +52,6 @@ if(newVersion=='3.14') {
     if(version==newVersion && utc_remote<202206270000) { addOtherData(remoteOption,remoteText);resizeFont(17); };
     if(checkNewVersion(newVersion)) { addOtherData(remoteOption,remoteText);resizeFont(17); };
 }
-
 //远程更改表格数据，发现3.16(含)之前的版本四处错误，将在下个版本更正。
 if(checkNewVersion('3.17')) {
     document.getElementById("plateTable").rows[4].cells[1].innerHTML="134400";
@@ -68,7 +59,6 @@ if(checkNewVersion('3.17')) {
     document.getElementById("keyTable").rows[7].cells[5].innerHTML="15%-2&#128273;<br>20000pt";
     document.getElementById("keyTable").rows[7].cells[8].innerHTML="1.88%";
 };
-
 //远程将新女孩添加到女孩属性和涂油提升部分，举例：若新女孩出现在2.1版本发布后，则所有已发布版本理应全部远程添加该女孩，checkNewVersion('2.2')匹配2.2之前的版本，不包含2.2
 if(checkNewVersion('2.2')) {
 girlAttArrbk=girlAttArr;
@@ -87,7 +77,6 @@ altRows('powTable','powevenrowcolor','powoddrowcolor');
 altRows('tecTable','tecevenrowcolor','tecoddrowcolor');
 altRows('stmTable','stmevenrowcolor','stmoddrowcolor');
 };
-
 //排位档期
 qualifying_starttime='202206090930'
 qualifying_endtime='202206160000'
@@ -114,8 +103,7 @@ if(utc_remote>=qualifying_starttime && utc_remote<qualifying_endtime) {
         addOtherData('排位奖励','<br>',rankArr);resizeFont(10,'text');tableRowSpan(0,0,1);tableColSpan(0,1,4);tableRowSpan(0,2,1);tableColSpan(0,3,4);tableFontWeight();tableFontWeight(2,0);tableFontWeight(3,0);tableFontWeight(4,0);tableFontWeight(5,0);tableFontWeight(7,0);tableFontWeight(11,0);tableFontWeight(3,6);tableFontWeight(7,6);tableFontWeight(8,6);
     }
     qualifying_text='<br><br><br><p style="text-align:center;">'+qualifying_title+'<a title='+qualifying_notice+' style="text-decoration:none;color:blue" href="#" rel="external nofollow" onclick="useDefBrowser(qualifying_link)">分数线</a>(截止23:00)</p>'
-    qualifying_table=[
-        ['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;400&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;800&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;2000&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;5000&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;6500&nbsp;&nbsp;&nbsp;&nbsp;'],
+    qualifying_table=[['&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;100&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;400&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;800&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;2000&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;5000&nbsp;&nbsp;&nbsp;&nbsp;','&nbsp;&nbsp;&nbsp;&nbsp;6500&nbsp;&nbsp;&nbsp;&nbsp;'],
         ['周四','','','','','',''],
         ['周五','','','','','',''],
         ['周六','','','','','',''],
@@ -126,7 +114,6 @@ if(utc_remote>=qualifying_starttime && utc_remote<qualifying_endtime) {
     ]
     addOtherData('排位分数',qualifying_text,qualifying_table);resizeFont(10.7,'table');tableFontWeight();tableFontWeight('',0);
 }
-
 //pvp公式
 if(utc_remote<'202206271500') {
     pvpText='<br><br><br>'+
@@ -136,7 +123,6 @@ if(utc_remote<'202206271500') {
     '————以上数据来自“熊大”大佬！';
     addOtherData('pvp公式',pvpText);resizeFont(17);
 }
-
 //女孩生日当天更换背景图片
 utc_birthday=utc_remote.slice(4);
 if(utc_birthday>='07061600' && utc_birthday<'07071600') {
