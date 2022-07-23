@@ -10,8 +10,8 @@
 支持不同版本对应推送不同的远程数据
 修复3.11版本点击下拉菜单可能导致程序闪退的BUG
 </span><span id="noticeend"></span>
-scrollingMarqueestart 远程空间无法访问，请刷新重试！ scrollingMarqueeend
-//remotestart
+scrollingMarqueestart 3.17版本已经发布，请更新！ scrollingMarqueeend
+//remotedatastart
 //格式化时间字符串，值为格林尼治标准时间: YYYYMMDDhhmm
 utc_remote=new Date().toISOString().replace(/-|T|:/g,'').slice(0,12);
 //发布最新版本，低于该版本所有用户将收到铃铛图标更新提示，请至少保留一个Notice的定义，否则3.12版本会产生报错。
@@ -157,4 +157,4 @@ if(utc_birthday>='10231600' && utc_birthday<'10241600') {
     document.getElementById('firstDiv').style.backgroundImage = "url(http://doax.freevar.com/img/tsukushi_birthday.jpg)";
     document.getElementById('firstDiv').style.backgroundSize = "auto";
 }
-//remoteend
+//remotedataend
